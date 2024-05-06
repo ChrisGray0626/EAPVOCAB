@@ -1,0 +1,30 @@
+{
+	"pages": [
+//		{
+//			"path": "pages/index/index"
+//		},
+		{
+			"path": "pages/discover/index"
+		},
+		{
+			"path": "pages/articleDetail/index"
+		},
+		{
+			"path": "pages/goalSetting/index"
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "EAPVOCAB",
+		"usingComponents": {
+		},
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"easycom": {
+		"autoscan": true,
+		"custom": {
+			"^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue"
+		}
+	}
+}
