@@ -8,55 +8,57 @@
       />
     </view>
     <view>
-      <uni-grid :showBorder="false" :column="4">
+      <uni-grid :column="4" :showBorder="false">
         <uni-grid-item v-for="item in items1" :key="item.text">
           <view class="grid-item-box">
-            <image style="width: 100px; height: 100px" :src="item.src"/>
+            <image :src="item.src" style="width: 100px; height: 100px"/>
             <text>{{ item.text }}</text>
           </view>
         </uni-grid-item>
       </uni-grid>
     </view>
     <view>
-      <uni-grid :showBorder="false" :column="3">
+      <uni-grid :column="3" :showBorder="false">
         <uni-grid-item v-for="item in items2" :key="item.text">
           <view class="grid-item-box">
-            <image style="width: 100px; height: 100px" :src="item.src"/>
+            <image :src="item.src" style="width: 100px; height: 100px"/>
             <text>{{ item.text }}</text>
           </view>
         </uni-grid-item>
       </uni-grid>
     </view>
-    <view class="todayReadings">
-      <navigator url="/pages/articleDetail/index" hover-class="navigator-hover">
-      <!-- 标题 -->
-      <view class="at-row at-row__align--center">
-        <view class="at-col">
-          <view class="todayReadingsTop">
-            <view class="readingTop">
-              <text>Daily Reading</text>
+    <navigator hover-class="none" url="/pages/articleDetail/index">
+
+      <view class="todayReadings">
+        <!-- 标题 -->
+        <view class="at-row at-row__align--center">
+          <view class="at-col">
+            <view class="todayReadingsTop">
+              <view class="readingTop">
+                <text>Daily Reading</text>
+              </view>
+            </view>
+          </view>
+          <!-- TODO Read More -->
+          <view class="at-col">
+            <view class="readingMore">
+              <text class="moreText">More</text>
+              <uni-icons size="30" type="more"/>
             </view>
           </view>
         </view>
-        <!-- TODO Read More -->
-        <view class="at-col">
-          <view class="readingMore">
-            <text class="moreText">More</text>
-            <uni-icons type="more" size="30"/>
-          </view>
+        <!-- 图片 -->
+        <view class="contentImage"></view>
+        <!-- 文章大致内容 -->
+        <view class="mainContent">
+          <text>How Can AI Help Create Flavours?</text>
+        </view>
+        <view class="CNContent">
+          <text>食物味道, AI制造!</text>
         </view>
       </view>
-      <!-- 图片 -->
-      <view class="contentImage"></view>
-      <!-- 文章大致内容 -->
-      <view class="mainContent">
-        <text>How Can AI Help Create Flavours?</text>
-      </view>
-      <view class="CNContent">
-        <text>食物味道, AI制造!</text>
-      </view>
-        </navigator>
-    </view>
+    </navigator>
+
     <!-- 底部信息 -->
     <view class="endMsg">
       <text>一 Done~ 一</text>
