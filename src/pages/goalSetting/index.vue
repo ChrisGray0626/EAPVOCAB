@@ -10,7 +10,7 @@
           <navigator hover-class="none" url="/pages/moduleChange/index">
             <view class="changeModule">
               <text>Change Module</text>
-              <uni-icons color="#C0C0C0" size="18" type="refreshempty" style="margin-left: 5px;"/>
+              <uni-icons color="#C0C0C0" size="18" style="margin-left: 5px;" type="refreshempty"/>
 
             </view>
           </navigator>
@@ -19,24 +19,37 @@
           <text>{{ studiedWords }} / {{ remainWords }}</text>
         </view>
         <view class="progress">
-          <progress :percent="studiedPercentage" stroke-width="14" activeColor="#78A4F4"/>
+          <u-line-progress
+              :percentage="studiedPercentage"
+              :showText="false"
+              activeColor="#78A4F4"
+          />
         </view>
       </view>
     </view>
+    <u-divider/>
+
     <view class="goalPicker">
-      <view class="Divider">
-        <uni-data-picker
-            :localdata="alternativePlans"
-            placeholder="Please select your study plan"
-            popup-title="Please select your study plan"
-            value="selectedDailyWordNum"
+      <view class="selectedPlan" @click="show">
+        <text>Your Study Plan: {{ selectedPlan }}</text>
+      </view>
+      <view>
+        <u-picker
+            :columns="alternativePlans"
+            :show="isShow"
+            cancelText="Cancel"
+            confirmText="Confirm"
+            keyName="label"
+            title="Study Plan"
+            @cancel="cancel"
+            @confirm="confirm"
         />
       </view>
     </view>
     <navigator hover-class="none" url="/pages/index/index">
 
       <view class="saveBtn">
-        <button type="primary">Save Plan</button>
+        <u-button shape="circle" type="primary">Save Plan</u-button>
       </view>
     </navigator>
 
@@ -49,10 +62,11 @@ import './index.less'
 export default defineComponent({
   data() {
     return {
+      isShow: true,
       remainWords: 3272,
       studiedWords: 666,
-      alternativePlans: [] as { text: string; value: number } [],
-      selectedDailyWordNum: 0,
+      alternativePlans: [] as string[][],
+      selectedPlan: "",
     }
   },
   created() {
@@ -66,13 +80,25 @@ export default defineComponent({
 
   methods: {
     initAlternativePlans() {
+      let ll = []
       for (let i = 1; i <= 50; i++) {
         const dailyWordNum = i * 5
         const dayNum = Math.ceil(this.remainWords / dailyWordNum)
-        this.alternativePlans.push({text: `${dailyWordNum} Words ${dayNum} Days`, value: dailyWordNum})
+        ll.push(`${dailyWordNum} Words ${dayNum} Days`)
       }
-      this.selectedDailyWordNum = this.alternativePlans[0].value
+      this.alternativePlans.push(ll)
+      this.selectedPlan = this.alternativePlans[0][0]
     },
+    confirm(e: any) {
+      this.isShow = false
+      this.selectedPlan = e.value[0]
+    },
+    cancel() {
+      this.isShow = false
+    },
+    show() {
+      this.isShow = true
+    }
   }
 })
 </script>

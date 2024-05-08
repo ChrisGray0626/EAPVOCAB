@@ -3,7 +3,10 @@
     <view class="studentCard">
       <navigator hover-class="none" url="/pages/wordBank/index">
         <view class="studentInfo">
-          <image class="avatar" src="../../static/images/boy_avatar.png"/>
+          <u-avatar
+              size="100"
+              src="../../static/images/boy_avatar.png"
+          />
           <view v-if="userProfile.username">
             <view class="userName">Hi, {{ userProfile.username }}</view>
             <view class="userid">{{ emailUsername }}</view>
@@ -14,13 +17,15 @@
           <view class="calendar">
             <text>Word Bank</text>
             <view class="rightIcon">
-              <uni-icons type="right" size='20' color='#696969'></uni-icons>
+              <uni-icons color='#696969' size='20' type="right"></uni-icons>
             </view>
           </view>
         </view>
       </navigator>
 
-      <view class="divider"></view>
+      <view class="divider">
+        <u-divider/>
+      </view>
 
       <view class="englishContent">
         <view class="bookInfo">
@@ -28,15 +33,18 @@
             <text>EAP033</text>
           </view>
           <view class="edit">
-            <navigator url="/pages/goalSetting/index" hover-class="none">
+            <navigator hover-class="none" url="/pages/goalSetting/index">
               <text>Change</text>
-              <uni-icons type="right" size='18' color='rgb(195, 195, 195)'></uni-icons>
+              <uni-icons color='rgb(195, 195, 195)' size='18' type="right"></uni-icons>
             </navigator>
           </view>
         </view>
         <view class="progress">
-<!--          TODO border-radius-->
-          <progress :percent="studiedPercentage" border-radius="0.5" stroke-width="14" activeColor="#78A4F4"/>
+          <u-line-progress
+              :percentage="studiedPercentage"
+              :showText="false"
+              activeColor="#78A4F4"
+          />
         </view>
         <view class="schedule">
           <view>
@@ -66,9 +74,9 @@
       </view>
     </view>
     <view class='startWords'>
-      <button type='primary' style="border-radius: 20px">
+      <u-button shape="circle" type='primary'>
         <text>Start Quiz !</text>
-      </button>
+      </u-button>
     </view>
 
   </view>

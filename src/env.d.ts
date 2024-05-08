@@ -6,3 +6,8 @@ declare module '*.vue' {
     const component: DefineComponent<{}, {}, any>
     export default component
 }
+
+declare module 'uview-ui' {
+    const uView: any;
+    export default uView;
+}
