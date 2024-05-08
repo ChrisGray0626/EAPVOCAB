@@ -14,41 +14,39 @@
   justify-content: center;
 }
 
-.todayReadingsTop {
-  // margin: 20px;
-  // background-color: white;
-  border-radius: 10px;
+.dailyReading {
+  margin-top: 20px;
+  padding-bottom: 20px;
+  background-color: white;
 
-  .readingTop {
-    margin: 10px 20px;
-    padding: 20px;
+  .top {
     display: flex;
-    position: relative;
-  }
+    border-radius: 10px;
 
+    .dailyReadyText {
+      margin: 10px 20px;
+      padding: 20px;
+      display: flex;
+      position: relative;
+            font-size: 40px;
+      font-weight: 900;
+    }
 
-  text {
-    font-size: 40px;
-    font-weight: 900;
+    .readingMore {
+            margin-left: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      .moreText {
+        font-size: 20px;
+        // font-weight: normal;
+        color: rgb(209, 209, 209);
+      }
+    }
   }
 }
 
-.readingMore {
-  display: flex;
-  float: right;
-  margin-right: 30px;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  // top: ;
-  .moreText {
-    position: absolute;
-    right: 35px;
-    font-size: 28px;
-    // font-weight: normal;
-    color: rgb(209, 209, 209);
-  }
-}
 
 .contentImage {
   // margin: 20px;
@@ -77,20 +75,13 @@
   font-size: 24px;
 }
 
-
-.todayReadings {
-  margin-top: 20px;
-  padding-bottom: 20px;
-  background-color: white;
-}
-
 .endMsg {
   margin: 70px 20px;
   display: flex;
   justify-content: center;
   align-items: center;
 
-  Text {
+  text {
     // font-size: 40px;
     // font-weight: bold;
     color: rgb(151, 151, 151);

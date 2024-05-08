@@ -29,22 +29,14 @@
     </view>
     <navigator hover-class="none" open-type="redirect" url="/pages/articleDetail/index">
 
-      <view class="todayReadings">
-        <!-- 标题 -->
-        <view class="at-row at-row__align--center">
-          <view class="at-col">
-            <view class="todayReadingsTop">
-              <view class="readingTop">
-                <text>Daily Reading</text>
-              </view>
-            </view>
+      <view class="dailyReading">
+        <view class="top">
+          <view class="dailyReadyText">
+            <text>Daily Reading</text>
           </view>
-          <!-- TODO Read More -->
-          <view class="at-col">
-            <view class="readingMore">
-              <text class="moreText">More</text>
-              <uni-icons size="30" type="more"/>
-            </view>
+          <view class="readingMore">
+            <text class="moreText">More</text>
+            <uni-icons size="20" type="right" color="rgb(209, 209, 209)"/>
           </view>
         </view>
         <!-- 图片 -->
