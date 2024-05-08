@@ -27,7 +27,7 @@
         </uni-grid-item>
       </uni-grid>
     </view>
-    <navigator hover-class="none" open-type="redirect" url="/pages/articleDetail/index">
+    <navigator hover-class="none" url="/pages/articleDetail/index">
 
       <view class="dailyReading">
         <view class="top">
