@@ -7,7 +7,4 @@ declare module '*.vue' {
     export default component
 }
 
-declare module 'uview-ui' {
-    const uView: any;
-    export default uView;
-}
+declare module 'uview-ui'

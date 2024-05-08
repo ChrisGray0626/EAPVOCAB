@@ -1,27 +1,25 @@
 <template>
   <view class="content">
     <view class="studentCard">
-      <navigator hover-class="none" url="/pages/wordBank/index">
-        <view class="studentInfo">
-          <u-avatar
-              size="100"
-              src="../../static/images/boy_avatar.png"
-          />
-          <view v-if="userProfile.username">
-            <view class="userName">Hi, {{ userProfile.username }}</view>
-            <view class="userid">{{ emailUsername }}</view>
-          </view>
-          <view v-else class="logIn">
-            <text>Log In</text>
-          </view>
-          <view class="calendar">
-            <text>Word Bank</text>
-            <view class="rightIcon">
-              <uni-icons color='#696969' size='20' type="right"></uni-icons>
-            </view>
+      <view class="studentInfo">
+        <u-avatar
+            size="100"
+            src="../../static/images/boy_avatar.png"
+        />
+        <view v-if="userProfile.username">
+          <view class="userName">Hi, {{ userProfile.username }}</view>
+          <view class="userid">{{ emailUsername }}</view>
+        </view>
+        <view v-else class="login" @click="goToLogin">
+          <text>Log In</text>
+        </view>
+        <view class="wordBank" @click="goToWordBank">
+          <text>Word Bank</text>
+          <view class="rightIcon">
+            <uni-icons color='#696969' size='20' type="right"></uni-icons>
           </view>
         </view>
-      </navigator>
+      </view>
 
       <view class="divider">
         <u-divider/>
@@ -32,11 +30,9 @@
           <view class="bookName">
             <text>EAP033</text>
           </view>
-          <view class="edit">
-            <navigator hover-class="none" url="/pages/goalSetting/index">
-              <text>Change</text>
-              <uni-icons color='rgb(195, 195, 195)' size='18' type="right"></uni-icons>
-            </navigator>
+          <view class="edit" @click="goToGoalSetting">
+            <text>Change</text>
+            <uni-icons color='rgb(195, 195, 195)' size='18' type="right"></uni-icons>
           </view>
         </view>
         <view class="progress">
@@ -103,5 +99,22 @@ export default defineComponent({
       return this.studiedWords / this.remainWords * 100
     }
   },
+  methods: {
+    goToLogin() {
+      uni.navigateTo({
+        url: '/pages/login/index'
+      })
+    },
+    goToWordBank() {
+      uni.navigateTo({
+        url: '/pages/wordBank/index'
+      })
+    },
+    goToGoalSetting() {
+      uni.redirectTo({
+        url: '/pages/goalSetting/index'
+      })
+    }
+  }
 });
 </script>

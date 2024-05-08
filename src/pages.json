@@ -11,6 +11,9 @@
     },
     {
       "path": "pages/goalSetting/index"
+    },
+    {
+      "path": "pages/login/index"
     }
   ],
   "globalStyle": {
