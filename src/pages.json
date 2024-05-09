@@ -17,6 +17,9 @@
     },
     {
       "path": "pages/moduleChange/index"
+    },
+    {
+      "path": "pages/register/index"
     }
   ],
   "globalStyle": {

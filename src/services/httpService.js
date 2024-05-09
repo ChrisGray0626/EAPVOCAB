@@ -1,5 +1,5 @@
-import Taro from '@tarojs/taro'
-import {Router} from 'tarojs-router-next'
+// import Taro from '@tarojs/taro'
+// import {Router} from 'tarojs-router-next'
 // import interceptors from './interceptors';
 
 const interceptor = async function (chain) {

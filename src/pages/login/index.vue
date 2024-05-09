@@ -1,7 +1,7 @@
 <template>
   <view class='content'>
     <view class='title'>
-      Welcome!
+      <text>Welcome!</text>
     </view>
     <u--form :modelValue="userInfo">
       <view class='inputBox'>
@@ -26,6 +26,7 @@
       </view>
       <u-button type='primary' class='SignInButton' @click="login">Sign in</u-button>
       <u-button type='primary' plain="true" class='SignUpButton' @click="goToRegister">Sign up</u-button>
+<!--      TODO Wrong Password Popup-->
       <uni-popup ref="popup" type="bottom" border-radius="10px 10px 0 0">底部弹出 Popup 自定义圆角</uni-popup>
     </u--form>
   </view>
