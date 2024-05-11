@@ -28,6 +28,7 @@
             clickable
             link
             v-for="(item, index) in functions"
+            :to="item.url"
             :key="index"
         >
           <template v-slot:body>
