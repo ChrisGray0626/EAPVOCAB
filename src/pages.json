@@ -20,6 +20,12 @@
     },
     {
       "path": "pages/register/index"
+    },
+        {
+      "path": "pages/personal/index"
+    },
+            {
+      "path": "pages/wordBank/index"
     }
   ],
   "globalStyle": {

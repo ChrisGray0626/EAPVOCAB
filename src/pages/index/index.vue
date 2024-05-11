@@ -4,7 +4,7 @@
       <view class="studentInfo">
         <u-avatar
             size="100"
-            src="../../static/images/boy_avatar.png"
+            :src="avatarUrl"
         />
         <view v-if="userProfile.username">
           <view class="userName">Hi, {{ userProfile.username }}</view>
@@ -86,6 +86,7 @@ export default defineComponent({
   data() {
     return {
       userProfile: {} as { username: string; email: string },
+      avatarUrl: "../../static/images/boy_avatar.png",
       remainWords: 3272,
       studiedWords: 666,
       remainDayNum: 100,

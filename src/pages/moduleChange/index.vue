@@ -2,7 +2,8 @@
   <view class="content">
     <u-collapse v-for="(module, index) in modules" :key="index" accordion :border="false">
       <u-collapse-item :title="module.title" disabled icon="bookmark-fill" class="title">
-          <view v-for="(word, index) in module.words" :key="index" class="item">
+<!--        TODO uni-list  -->
+        <view v-for="(word, index) in module.words" :key="index" class="item">
             <text>{{ word }}</text>
             <uni-icons type="right" size="14"></uni-icons>
           </view>
