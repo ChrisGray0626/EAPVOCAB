@@ -3,11 +3,11 @@
     <view class='title'>
       <text>Welcome!</text>
     </view>
-    <u--form :modelValue="userInfo">
+    <u-form :modelValue="userInfo">
       <view class='inputBox'>
         <view class='inputLabel'>Email</view>
         <u-form-item borderBottom="true">
-          <u--input
+          <u-input
               placeholder="Please Input Your Email"
               v-model="userInfo.email"
               border="none"
@@ -17,10 +17,11 @@
       <view class='inputBox'>
         <text class='inputLabel'>Password</text>
         <u-form-item borderBottom="true">
-          <u--input
+          <u-input
               placeholder="Please Input Your Password"
               v-model="userInfo.password"
               border="none"
+              password
           />
         </u-form-item>
       </view>
@@ -28,7 +29,7 @@
       <u-button type='primary' plain="true" class='SignUpButton' @click="goToRegister">Sign up</u-button>
 <!--      TODO Wrong Password Popup-->
       <uni-popup ref="popup" type="bottom" border-radius="10px 10px 0 0">底部弹出 Popup 自定义圆角</uni-popup>
-    </u--form>
+    </u-form>
   </view>
 </template>
 <script lang="ts">
@@ -54,7 +55,7 @@ export default defineComponent({
       this.gotoIndex()
     },
     gotoIndex() {
-      uni.redirectTo({
+      uni.switchTab({
         url: '/pages/index/index?username=' + this.username
       })
     },

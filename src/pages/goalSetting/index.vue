@@ -46,12 +46,9 @@
         />
       </view>
     </view>
-    <navigator hover-class="none" url="/pages/index/index">
-
-      <view class="saveBtn">
-        <u-button shape="circle" type="primary">Save Plan</u-button>
-      </view>
-    </navigator>
+    <view class="saveBtn">
+      <u-button shape="circle" type="primary" @click="savePlan">Save Plan</u-button>
+    </view>
 
   </view>
 </template>
@@ -98,7 +95,14 @@ export default defineComponent({
     },
     show() {
       this.isShow = true
+    },
+    savePlan() {
+      // TODO Save Plan
+      this.goBack();
+    },
+    goBack() {
+      uni.navigateBack()
     }
-  }
+  },
 })
 </script>

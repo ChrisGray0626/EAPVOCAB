@@ -21,10 +21,10 @@
     {
       "path": "pages/register/index"
     },
-        {
+    {
       "path": "pages/personal/index"
     },
-            {
+    {
       "path": "pages/wordBank/index"
     }
   ],
@@ -34,7 +34,33 @@
     "usingComponents": {
     },
     "navigationBarBackgroundColor": "#F8F8F8",
-    "backgroundColor": "#F8F8F8"
+    "backgroundColor": "#F8F8F8",
+    "animationType": "pop-in"
+  },
+  "tabBar": {
+    "color": "#dbdbdb",
+    "selectedColor": "#2c2c2c",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "Home",
+        "iconPath": "static/tabBar/home.png",
+        "selectedIconPath": "static/tabBar/home_selected.png"
+      },
+      {
+        "pagePath": "pages/discover/index",
+        "text": "Discover",
+        "iconPath": "static/tabBar/discover.png",
+        "selectedIconPath": "static/tabBar/discover_selected.png"
+      },
+      {
+        "pagePath": "pages/personal/index",
+        "text": "Me",
+        "iconPath": "static/tabBar/me.png",
+        "selectedIconPath": "static/tabBar/me_selected.png"
+      }
+    ]
   },
   "easycom": {
     "autoscan": true,
