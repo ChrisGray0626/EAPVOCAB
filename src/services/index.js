@@ -1,5 +1,4 @@
-// import httpService from "./httpService";
-// import Taro from '@tarojs/taro'
+import httpService from "./httpService";
 
 
 // const baseURL= 'http://114.55.87.45:8001/'
@@ -9,9 +8,8 @@ const baseURL = 'api/'
  * 获取词汇bank
  */
 export function getVocabularyBank() {
-    return Taro.request({
+    return httpService.get({
         url: baseURL + "get_vocabulary_bank",
-        method: 'get',
     })
 }
 
@@ -19,9 +17,8 @@ export function getVocabularyBank() {
  * 获取用户信息
  */
 export function getUserProfile() {
-    return Taro.request({
+    return httpService.get({
         url: baseURL + "/user/get_user_info",
-        method: 'get'
     })
 }
 
@@ -29,9 +26,8 @@ export function getUserProfile() {
  * 获取词汇表
  */
 export function getVocabularyLib() {
-    return Taro.request({
+    return httpService.get({
         url: baseURL + 'get_vocabulary_lib',
-        method: 'get'
     })
 }
 
@@ -59,10 +55,9 @@ export function getAiQs(query) {
 
 /** 登录  */
 export function handleLogin(data) {
-    return Taro.request({
+    return httpService.post({
         url: baseURL + 'user/login',
         data: data,
-        method: 'post',
         timeout: 100000,
     })
 }
@@ -71,22 +66,20 @@ export function handleLogin(data) {
  * 发送注册请求
  */
 export function handleRegister(data, cookie) {
-    // return Taro.request({ // 这里用request
-    //     url: baseURL + 'user/register',
-    //     data: data,
-    //     method: 'post',
-    //     timeout: 100000,
-    // })
+    return httpService.post({ // 这里用request
+        url: baseURL + 'user/register',
+        data: data,
+        timeout: 100000,
+    })
 }
 
 /**
  * 发送注册验证码
  */
 export function sendVerificationCode(data) {
-    // return  Taro.request({ // 这里用request
-    //     url: baseURL + 'user/send_captcha',
-    //     data: data,
-    //     method: 'post',
-    //     timeout: 100000,
-    // })
+    return  httpService.post({ // 这里用request
+        url: baseURL + 'user/send_captcha',
+        data: data,
+        timeout: 100000,
+    })
 }
