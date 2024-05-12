@@ -3,13 +3,13 @@
     <view class='title'>
       <text>Welcome!</text>
     </view>
-    <u-form :modelValue="userInfo">
+    <u-form>
       <view class='inputBox'>
         <view class='inputLabel'>Email</view>
         <u-form-item borderBottom="true">
           <u-input
               placeholder="Please Input Your Email"
-              v-model="userInfo.email"
+              @change="changeEmail"
               border="none"
           />
         </u-form-item>
@@ -19,7 +19,7 @@
         <u-form-item borderBottom="true">
           <u-input
               placeholder="Please Input Your Password"
-              v-model="userInfo.password"
+              @change="changePassword"
               border="none"
               password
           />
@@ -27,7 +27,7 @@
       </view>
       <u-button type='primary' class='SignInButton' @click="login">Sign in</u-button>
       <u-button type='primary' plain="true" class='SignUpButton' @click="goToRegister">Sign up</u-button>
-<!--      TODO Wrong Password Popup-->
+      <!--      TODO Wrong Password Popup-->
       <uni-popup ref="popup" type="bottom" border-radius="10px 10px 0 0">底部弹出 Popup 自定义圆角</uni-popup>
     </u-form>
   </view>
@@ -36,34 +36,56 @@
 import {defineComponent} from 'vue'
 import './index.less'
 
-// import {handleLogin} from "../../services/index"
+import {getUserInfo, handleLogin} from "@/services"
 
 export default defineComponent({
   data() {
     return {
-      userInfo: {} as {
-        email: string;
-        password: string;
-      },
-      username: 'Chris'
+      email: '123',
+      password: '',
     };
   },
   computed: {},
   methods: {
-    login() {
-      // TODO Login API
-      this.gotoIndex()
+    login: async function () {
+      let data = {
+        email: this.email,
+        password: this.password
+      }
+      // TODO const res = await
+      handleLogin(data).then((res: any) => {
+        if (res.data.code == 20000) {
+          getUserInfo().then((res: any) => {
+            uni.setStorageSync('userInfo', res.data.data)
+            uni.showToast({title: "Login successful!", icon: 'success', duration: 1000})
+            uni.switchTab({
+              url: "/pages/index/index"
+            })
+          })
+          this.gotoIndex()
+        } else {
+          // TODO Wrong Password Popup
+          uni.showToast({title: "Wrong Password!", icon: 'none', duration: 1000})
+        }
+      })
     },
     gotoIndex() {
       uni.switchTab({
-        url: '/pages/index/index?username=' + this.username
+        url: '/pages/index/index'
       })
     },
     goToRegister() {
       uni.navigateTo({
         url: '/pages/register/index'
       })
+    },
+    changeEmail(value: string) {
+      this.email = value
+    },
+    changePassword(value: string) {
+      this.password = value
     }
+
   }
 });
 </script>

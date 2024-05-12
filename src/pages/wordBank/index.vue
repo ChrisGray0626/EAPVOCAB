@@ -24,7 +24,7 @@
 import {defineComponent} from 'vue'
 import './index.less'
 
-import {getAiQs, getVocabularyLib} from '../../services/index'
+import {getAiQs, getVocabularyLib} from '../../services'
 
 export default defineComponent({
   data() {
