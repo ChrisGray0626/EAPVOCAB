@@ -1,7 +1,9 @@
 // import Taro from '@tarojs/taro'
 // import {Router} from 'tarojs-router-next'
 // import interceptors from './interceptors';
-
+// TODO Interceptor
+//  https://uniapp.dcloud.net.cn/api/interceptor.html
+//  https://juejin.cn/post/7140512715453235207
 const interceptor = async function (chain) {
   const requestParams = chain.requestParams
 
@@ -29,13 +31,13 @@ const interceptor = async function (chain) {
   return res
 }
 
-Taro.addInterceptor(interceptor)
+uni.addInterceptor(interceptor)
 
 
 // option: url:string, data:json, header:json
 export default {
   request(option, method = "GET") {
-    return Taro.request({
+    return uni.request({
       ...option,
       method,
       header: {
