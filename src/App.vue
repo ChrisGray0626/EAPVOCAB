@@ -4,9 +4,11 @@
 
 <script lang="ts" setup>
 import {onHide, onLaunch, onShow} from "@dcloudio/uni-app";
+import { handlePermission } from "./services/permission";
 
 onLaunch(() => {
   console.log("App Launch");
+  handlePermission();
 });
 onShow(() => {
   console.log("App Show");

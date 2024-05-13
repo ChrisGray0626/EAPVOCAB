@@ -57,7 +57,7 @@
 import {defineComponent} from 'vue'
 import './index.less'
 
-import {handleRegister, sendVerificationCode} from "../../services"
+import {handleRegister, sendVerificationCode} from "@/services"
 
 export default defineComponent({
   data() {

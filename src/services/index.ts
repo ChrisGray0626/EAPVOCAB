@@ -1,5 +1,4 @@
-import httpService from './httpService'
-
+import httpService from './baseRequest';
 
 const baseURL= 'http://114.55.87.45:8001/'
 // const baseURL = 'api/'
