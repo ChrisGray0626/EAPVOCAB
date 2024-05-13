@@ -3,11 +3,11 @@
     <view class="title">
       <text>Sign Up</text>
     </view>
-    <u--form :modelValue='userInfo'>
+    <u-form :modelValue='userInfo'>
       <view class="inputBox">
         <view class="inputLabel">Nickname</view>
         <u-form-item borderBottom="true">
-          <u--input
+          <u-input
               placeholder="Please Input Your Nickname"
               v-model="userInfo.nickname"
               border="none"
@@ -17,7 +17,7 @@
       <view class="inputBox">
         <view class="inputLabel">Password</view>
         <u-form-item borderBottom="true">
-          <u--input
+          <u-input
               placeholder="Please Input Your Password"
               v-model="userInfo.password"
               border="none"
@@ -27,7 +27,7 @@
       <view class="inputBox">
         <view class="inputLabel">XJTLU Email</view>
         <u-form-item borderBottom="true">
-          <u--input
+          <u-input
               placeholder="Please Input Your Email"
               v-model="userInfo.email"
               border="none"
@@ -38,7 +38,7 @@
         <view class="inputLabel">Verification Code</view>
         <view class="formContent">
           <u-form-item borderBottom="true">
-            <u--input
+            <u-input
                 placeholder="Verification Code"
                 v-model="verificationCode"
                 border="none"
@@ -50,7 +50,7 @@
         </view>
       </view>
       <u-button type='primary' @click="signUp">Submit</u-button>
-    </u--form>
+    </u-form>
   </view>
 </template>
 <script lang="ts">
@@ -81,20 +81,20 @@ export default defineComponent({
       const data = {
         email: this.userInfo.email,
       };
+      // TODO await
       sendVerificationCode(data).then(res => {
         if (res.statusCode !== 500) {
           if (res.data.code == 0) {
-            // TODO Popup Error Message
-            // Taro.atMessage({
-            //   message: res.data.msg,
-            //   type: 'warning'
-            // });
+            uni.showToast({
+                title: res.data.msg,
+                icon: 'error',
+              }
+            )
           } else {
-            // TODO Popup Success Message
-            // Taro.atMessage({
-            //   message: "Please check your email",
-            //   type: 'success'
-            // });
+            uni.showToast({
+              title: "Please check your email",
+              icon: 'error',
+            })
             this.initCountDown();
           }
           this.isSending = false;
@@ -111,15 +111,16 @@ export default defineComponent({
       this.goToLogin();
       handleRegister(data).then(res => {
         if (res.data.code === 0) {
-          // TODO Popup Error Message
-          // Taro.atMessage({
-          //   message: res.data.msg,
-          //   type: 'warning'
-          // });
+          uni.showToast({
+            title: res.data.msg,
+            icon: 'error',
+          })
         }
         if (res.data.code === 20000) {
-          // TODO Popup Success Message
-          // Taro.showToast({title: "Registration successful!", icon: 'success', duration: 2000})
+          uni.showToast({
+            title: "Registration successful!",
+            icon: 'success',
+          })
           this.goToLogin();
         }
       })

@@ -27,9 +27,7 @@
         </uni-grid-item>
       </uni-grid>
     </view>
-    <navigator hover-class="none" url="/pages/articleDetail/index">
-
-      <view class="dailyReading">
+      <view class="dailyReading" @Click="goToArticleDetail">
         <view class="top">
           <view class="dailyReadyText">
             <text>Daily Reading</text>
@@ -49,8 +47,6 @@
           <text>食物味道, AI制造!</text>
         </view>
       </view>
-    </navigator>
-
     <!-- 底部信息 -->
     <view class="endMsg">
       <text>一 Done~ 一</text>
@@ -76,6 +72,13 @@ export default defineComponent({
         {src: '../../static/images/game.png', width: '100', height: '100', text: 'Class Activity'}
       ]
     };
+  },
+  methods: {
+    goToArticleDetail() {
+      uni.navigateTo({
+        url: '/pages/articleDetail/index'
+      })
+    }
   },
 });
 </script>

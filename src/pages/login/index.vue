@@ -27,8 +27,6 @@
       </view>
       <u-button type='primary' class='SignInButton' @click="login">Sign in</u-button>
       <u-button type='primary' plain="true" class='SignUpButton' @click="goToRegister">Sign up</u-button>
-      <!--      TODO Wrong Password Popup-->
-      <uni-popup ref="popup" type="bottom" border-radius="10px 10px 0 0">底部弹出 Popup 自定义圆角</uni-popup>
     </u-form>
   </view>
 </template>
@@ -57,15 +55,14 @@ export default defineComponent({
         if (res.data.code == 20000) {
           getUserInfo().then((res: any) => {
             uni.setStorageSync('userInfo', res.data.data)
-            uni.showToast({title: "Login successful!", icon: 'success', duration: 1000})
+            uni.showToast({title: "Login successful!", icon: 'success'})
             uni.switchTab({
               url: "/pages/index/index"
             })
           })
           this.gotoIndex()
         } else {
-          // TODO Wrong Password Popup
-          uni.showToast({title: "Wrong Password!", icon: 'none', duration: 1000})
+          uni.showToast({title: "Login failed. Please check your email and password!", icon: 'error'})
         }
       })
     },
