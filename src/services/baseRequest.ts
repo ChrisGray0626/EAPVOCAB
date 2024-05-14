@@ -5,7 +5,7 @@ export default {
             ...option,
             method,
             header: {
-                'content-type': "multipart/form-data; boundary=<calculated when request is sent>",
+                'content-type': "application/json",
                 'X-Token': token,
                 ...option.header
             },
