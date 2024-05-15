@@ -6,8 +6,9 @@
             size="100"
             :src="avatarUrl"
         />
-        <view v-if="userProfile.username">
-          <view class="userName">Hi, {{ userProfile.username }}</view>
+<!--        TODO Padding-->
+        <view v-if="userInfo.username">
+          <view class="username">Hi, {{ userInfo.username }}</view>
           <view class="userid">{{ emailUsername }}</view>
         </view>
         <view v-else class="login" @click="goToLogin">
@@ -85,16 +86,19 @@ import './index.less'
 export default defineComponent({
   data() {
     return {
-      userProfile: {} as { username: string; email: string },
+      userInfo: {} as { username: string; email: string },
       avatarUrl: "../../static/images/boy_avatar.png",
       remainWords: 3272,
       studiedWords: 666,
       remainDayNum: 100,
     };
   },
+  mounted() {
+    this.userInfo = uni.getStorageSync('userInfo') || {};
+  },
   computed: {
     emailUsername(): string {
-      return this.userProfile.email ? this.userProfile.email.split('@')[0] : '';
+      return this.userInfo.email ? this.userInfo.email.split('@')[0] : '';
     },
     studiedPercentage(): number {
       return this.studiedWords / this.remainWords * 100

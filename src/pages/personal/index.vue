@@ -4,7 +4,7 @@
       <view class="studentInfo">
         <u-avatar :src="avatarUrl" size="100" class="avatar"/>
         <view class="info">
-          <view class="userName">ZiXuan</view>
+          <view class="username">{{userInfo.username}}</view>
           <view class="userid">ID: 123456</view>
         </view>
         <view class="editMyInfo">
@@ -48,6 +48,7 @@ import './index.less'
 export default defineComponent({
   data() {
     return {
+      userInfo: {} as { username: string; email: string },
       avatarUrl: '',
       functions: [
         {
@@ -68,6 +69,9 @@ export default defineComponent({
         },
       ],
     };
+  },
+  mounted() {
+    this.userInfo = uni.getStorageSync('userInfo') || {};
   },
 })
 </script>
