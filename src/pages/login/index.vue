@@ -50,7 +50,6 @@ export default defineComponent({
         email: this.email,
         password: this.password
       }
-      // TODO const res = await
       handleLogin(data).then((res: any) => {
         if (res.data.code == 20000) {
           getUserInfo().then((res: any) => {

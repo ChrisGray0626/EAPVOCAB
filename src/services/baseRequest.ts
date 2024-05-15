@@ -1,26 +1,25 @@
 export default {
-    request(option: any, method = "GET") {
+    request(options: UniApp.RequestOptions) {
         let token = uni.getStorageSync('x-token')
         return uni.request({
-            ...option,
-            method,
+            ...options,
+            // method,
             header: {
                 'content-type': "application/json",
                 'X-Token': token,
-                ...option.header
+                ...options.header
             },
-            success: ((res: any) => {
-                if (res.data.code == 20000) {
-                    uni.setStorageSync('x-token', res.header['X-Token'])
-                }
-            }),
         })
     },
-    get(option: any) {
-        return this.request(option, 'GET')
+
+    get(options: UniApp.RequestOptions) {
+        options.method = 'GET'
+        return this.request(options)
     },
-    post(option: any) {
-        return this.request(option, 'POST')
+
+    post(options: any) {
+        options.method = 'POST'
+        return this.request(options)
     }
 
 }

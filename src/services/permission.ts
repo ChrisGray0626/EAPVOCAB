@@ -6,7 +6,10 @@ export function handlePermission() {
 function handleRequestPermission() {
     uni.addInterceptor('request', {
         success(res) {
-            if (res.statusCode === 401 || res.data.code === 0) {
+            if (res.data.code === 20000) {
+                uni.setStorageSync('x-token', res.header['x-token'])
+            }
+            else if (res.statusCode === 401 || res.data.code === 0) {
                 uni.removeStorageSync('x-token')
                 uni.showModal({
                     title: 'Warning',
