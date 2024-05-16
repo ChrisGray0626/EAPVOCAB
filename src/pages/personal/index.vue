@@ -70,7 +70,7 @@ export default defineComponent({
       ],
     };
   },
-  mounted() {
+  onShow() {
     this.userInfo = uni.getStorageSync('userInfo') || {};
   },
 })

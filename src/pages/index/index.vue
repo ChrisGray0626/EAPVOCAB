@@ -6,8 +6,8 @@
             size="100"
             :src="avatarUrl"
         />
-<!--        TODO Padding-->
-        <view v-if="userInfo.username">
+        <!--        TODO Padding-->
+        <view v-if="userInfo.username" class="info">
           <view class="username">Hi, {{ userInfo.username }}</view>
           <view class="userid">{{ emailUsername }}</view>
         </view>
@@ -82,6 +82,7 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import './index.less'
+import {fetchUserInfo} from "@/services";
 
 export default defineComponent({
   data() {
@@ -93,8 +94,10 @@ export default defineComponent({
       remainDayNum: 100,
     };
   },
-  mounted() {
+  onShow() {
     this.userInfo = uni.getStorageSync('userInfo') || {};
+    this.getUserInfo()
+    // console.log("onShow", this.userInfo)
   },
   computed: {
     emailUsername(): string {
@@ -116,9 +119,21 @@ export default defineComponent({
       })
     },
     goToGoalSetting() {
-      uni.redirectTo({
+      uni.navigateTo({
         url: '/pages/goalSetting/index'
       })
+    },
+    getUserInfo() {
+      this.userInfo = uni.getStorageSync('userInfo')
+      if (!this.userInfo) {
+        const token = uni.getStorageSync('token')
+        if (token != '') {
+          fetchUserInfo().then((res: any) => {
+            this.userInfo = res.data.data
+            uni.setStorageSync('userInfo', this.userInfo)
+          })
+        }
+      }
     }
   }
 });

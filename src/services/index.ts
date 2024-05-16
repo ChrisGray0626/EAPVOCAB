@@ -15,7 +15,7 @@ export function getVocabularyBank() {
 /**
  * 获取用户信息
  */
-export function getUserInfo() {
+export function fetchUserInfo() {
     return httpService.get({
         url: baseURL + "user/get_user_info",
     })

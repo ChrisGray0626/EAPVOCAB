@@ -26,7 +26,7 @@
         </u-form-item>
       </view>
       <u-button type='primary' class='SignInButton' @click="login">Sign in</u-button>
-      <u-button type='primary' plain="true" class='SignUpButton' @click="goToRegister">Sign up</u-button>
+      <u-button type='primary' :plain="true" class='SignUpButton' @click="goToRegister">Sign up</u-button>
     </u-form>
   </view>
 </template>
@@ -34,7 +34,7 @@
 import {defineComponent} from 'vue'
 import './index.less'
 
-import {getUserInfo, handleLogin} from "@/services"
+import {fetchUserInfo, handleLogin} from "@/services"
 
 export default defineComponent({
   data() {
@@ -52,7 +52,7 @@ export default defineComponent({
       }
       handleLogin(data).then((res: any) => {
         if (res.data.code == 20000) {
-          getUserInfo().then((res: any) => {
+          fetchUserInfo().then((res: any) => {
             uni.setStorageSync('userInfo', res.data.data)
             uni.showToast({title: "Login successful!", icon: 'success'})
             uni.switchTab({
@@ -67,7 +67,7 @@ export default defineComponent({
     },
     gotoIndex() {
       uni.switchTab({
-        url: '/pages/index/index'
+        url: '/pages/index/index',
       })
     },
     goToRegister() {

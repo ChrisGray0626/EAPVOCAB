@@ -9,6 +9,7 @@ import { handlePermission } from "./services/permission";
 onLaunch(() => {
   console.log("App Launch");
   handlePermission();
+  uni.clearStorageSync();
 });
 onShow(() => {
   console.log("App Show");

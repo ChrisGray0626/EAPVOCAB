@@ -1,6 +1,6 @@
 export default {
     request(options: UniApp.RequestOptions) {
-        let token = uni.getStorageSync('x-token')
+        let token = uni.getStorageSync('token')
         return uni.request({
             ...options,
             // method,
