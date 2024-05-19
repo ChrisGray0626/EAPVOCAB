@@ -1,14 +1,21 @@
 <template>
+<!--  TODO getVocabularyLib-->
   <view class="content">
-    <u-collapse v-for="(module, index) in modules" :key="index" accordion :border="false">
-      <u-collapse-item :title="module.title" disabled icon="bookmark-fill" class="title">
-<!--        TODO uni-list  -->
-        <view v-for="(word, index) in module.words" :key="index" class="item">
+    <uni-collapse v-for="(module, index) in modules" :key="index" :accordion="true">
+      <uni-collapse-item :title="module.title" icon="bookmark-fill">
+        <uni-list>
+          <uni-list-item v-for="(word, index) in module.words" :key="index">
+            <template v-slot:body>
+              <view class="item">
+                <text>{{ word }}</text>
+              </view>
+            </template>
             <text>{{ word }}</text>
             <uni-icons type="right" size="14"></uni-icons>
-          </view>
-      </u-collapse-item>
-    </u-collapse>
+          </uni-list-item>
+        </uni-list>
+      </uni-collapse-item>
+    </uni-collapse>
 
   </view>
 </template>
@@ -27,8 +34,7 @@ export default defineComponent({
       ],
     };
   },
-  methods: {
-  },
+  methods: {},
 });
 
 </script>

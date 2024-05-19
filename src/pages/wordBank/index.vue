@@ -14,9 +14,17 @@
       <text>No Words In The Bank</text>
     </view>
     <view class="saveBtn">
-      <u-button type="primary" @click="getAIQuiz">
+      <u-button shape="circle" type="primary" @click="getAIQuiz">
         <text>AI-Generated Question</text>
       </u-button>
+    </view>
+    <view>
+      <!--      TODO Add Word-->
+      <uni-fab
+          ref="fab"
+          horizontal="right"
+          vertical="bottom"
+      />
     </view>
   </view>
 </template>
@@ -24,40 +32,43 @@
 import {defineComponent} from 'vue'
 import './index.less'
 
-import {getAiQs, getVocabularyLib} from '@/services'
+import {fetchVocabularyBank, fetchWordsInSection, getAiQs} from '@/services'
 
 export default defineComponent({
   data() {
     return {
-      words: [
-        {
-          word: 'apple',
-          explanation: '苹果',
-        },
-        {
-          word: 'banana',
-          explanation: '香蕉',
-        },
-        {
-          word: 'orange',
-          explanation: '橙子',
-        },
-      ],
+      voc_lib_id: "",
+      voc_sec_id: "",
+      words: [] as {
+        id: string,
+        word: string,
+        explanation: string,
+      }[],
     };
   },
   mounted() {
-    // TODO getVocabularyLib
-    getVocabularyLib().then(res => {
-      console.log(res.data.data)
-    })
+    this.getWords()
   },
   computed: {
     isWordListEmpty() {
-      // return true;
       return this.words.length === 0;
     },
   },
   methods: {
+    getWords() {
+      fetchVocabularyBank().then((res: any) => {
+        let data = res.data.data
+        this.voc_lib_id = data.voc_lib_id
+        this.voc_sec_id = data.voc_sec_id
+        data = {
+          voc_lib_id: this.voc_lib_id,
+          voc_sec_id: this.voc_sec_id,
+        }
+        fetchWordsInSection(data).then((res: any) => {
+          this.words = res.data.data
+        })
+      })
+    },
     getAIQuiz() {
       let queryParams = {word: "test"}
       getAiQs(queryParams).then(response => {

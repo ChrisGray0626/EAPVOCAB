@@ -21,6 +21,19 @@ export function fetchUserInfo() {
     })
 }
 
+export function fetchVocabularyBank() {
+    return httpService.get({
+        url: baseURL + "get_vocabulary_bank",
+    })
+}
+
+export function fetchWordsInSection(data: any) {
+    return httpService.get({
+        url: baseURL + "get_words_in_section?voc_lib_id=" + data.voc_lib_id + "&voc_sec_id=" + data.voc_sec_id,
+    })
+}
+
+
 /**
  * 获取词汇表
  */
