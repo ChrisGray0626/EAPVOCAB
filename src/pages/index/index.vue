@@ -6,7 +6,6 @@
             size="100"
             :src="avatarUrl"
         />
-        <!--        TODO Padding-->
         <view v-if="userInfo.username" class="info">
           <view class="username">Hi, {{ userInfo.username }}</view>
           <view class="userid">{{ emailUsername }}</view>

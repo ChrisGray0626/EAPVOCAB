@@ -99,7 +99,7 @@ export default defineComponent({
     },
     savePlan() {
       // TODO Save Plan
-      uni.showToast({title: "Save successful!", icon: 'success'})
+      uni.showToast({title: "Save successfully!", icon: 'success'})
       this.goBack();
     },
     goBack() {

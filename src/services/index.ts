@@ -21,15 +21,32 @@ export function fetchUserInfo() {
     })
 }
 
+/**
+ * 获取用户的词汇库
+ */
 export function fetchVocabularyBank() {
     return httpService.get({
         url: baseURL + "get_vocabulary_bank",
     })
 }
 
+/**
+ * 获取词汇库的词汇列表
+ *  // ?voc_lib_id=' + 1 + '&voc_sec_id=' + 1,
+ */
 export function fetchWordsInSection(data: any) {
     return httpService.get({
         url: baseURL + "get_words_in_section?voc_lib_id=" + data.voc_lib_id + "&voc_sec_id=" + data.voc_sec_id,
+    })
+}
+
+/**
+ * 添加单个单词
+ */
+export function addWordItem(data: any) {
+    return httpService.post({
+        url: baseURL + "upload_one_word",
+        data: data,
     })
 }
 
@@ -40,18 +57,6 @@ export function fetchWordsInSection(data: any) {
 export function getVocabularyLib() {
     return httpService.get({
         url: baseURL + 'get_vocabulary_lib',
-    })
-}
-
-
-/**
- * 根据lib_id和section_id获取单词列表
- *  // ?voc_lib_id=' + 1 + '&voc_sec_id=' + 1,
- */
-export function getWordsInSection(query) {
-    return httpService.get({
-        url: baseURL + 'get_words_in_section',
-        data: query
     })
 }
 

@@ -8,7 +8,7 @@
         <view class='inputLabel'>Email</view>
         <u-form-item borderBottom="true">
           <u-input
-              placeholder="Please Input Your Email"
+              placeholder="Please input your email"
               @change="changeEmail"
               border="none"
           />
@@ -18,7 +18,7 @@
         <text class='inputLabel'>Password</text>
         <u-form-item borderBottom="true">
           <u-input
-              placeholder="Please Input Your Password"
+              placeholder="Please input your password"
               @change="changePassword"
               border="none"
               password
@@ -54,7 +54,7 @@ export default defineComponent({
         if (res.data.code == 20000) {
           fetchUserInfo().then((res: any) => {
             uni.setStorageSync('userInfo', res.data.data)
-            uni.showToast({title: "Login successful!", icon: 'success'})
+            uni.showToast({title: "Login successfully!", icon: 'success'})
             uni.switchTab({
               url: "/pages/index/index"
             })
