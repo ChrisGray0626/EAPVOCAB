@@ -14,7 +14,7 @@
         </radio-group>
       </view>
       <view class="submit">
-        <u-button type="primary" @click="confirmAnswer">Confirm</u-button>
+        <u-button type="primary" @click.stop="confirmAnswer">Confirm</u-button>
       </view>
     </view>
 
@@ -87,11 +87,11 @@ export default defineComponent({
     //     uni.hideLoading()
     //   })
     // },
-    radioChange(e) {
+    radioChange(e: any) {
       this.selectedAnswer = e.detail.value
       console.log("selectedAnswer1", this.selectedAnswer)
     },
-    paginationChange(e) {
+    paginationChange(e: any) {
       this.currentIndex = e.current
     },
     confirmAnswer() {

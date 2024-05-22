@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import {onHide, onLaunch, onShow} from "@dcloudio/uni-app";
 import { handlePermission } from "./services/permission";
-
+// TODO @click.stop
 onLaunch(() => {
   console.log("App Launch");
   handlePermission();
