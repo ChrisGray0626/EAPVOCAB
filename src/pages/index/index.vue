@@ -70,7 +70,7 @@
       </view>
     </view>
     <view class='startWords'>
-      <u-button shape="circle" type='primary'>
+      <u-button shape="circle" type='primary' @click="goToWordTest()">
         <text>Start Quiz !</text>
       </u-button>
     </view>
@@ -94,7 +94,6 @@ export default defineComponent({
     };
   },
   onShow() {
-    this.userInfo = uni.getStorageSync('userInfo') || {};
     this.getUserInfo()
     // console.log("onShow", this.userInfo)
   },
@@ -107,6 +106,18 @@ export default defineComponent({
     }
   },
   methods: {
+    getUserInfo() {
+      this.userInfo = uni.getStorageSync('userInfo')
+      if (!this.userInfo) {
+        const token = uni.getStorageSync('token')
+        if (token != '') {
+          fetchUserInfo().then((res: any) => {
+            this.userInfo = res.data.data
+            uni.setStorageSync('userInfo', this.userInfo)
+          })
+        }
+      }
+    },
     goToLogin() {
       uni.navigateTo({
         url: '/pages/login/index'
@@ -122,17 +133,10 @@ export default defineComponent({
         url: '/pages/goalSetting/index'
       })
     },
-    getUserInfo() {
-      this.userInfo = uni.getStorageSync('userInfo')
-      if (!this.userInfo) {
-        const token = uni.getStorageSync('token')
-        if (token != '') {
-          fetchUserInfo().then((res: any) => {
-            this.userInfo = res.data.data
-            uni.setStorageSync('userInfo', this.userInfo)
-          })
-        }
-      }
+    goToWordTest() {
+      uni.navigateTo({
+        url: '/pages/wordTest/index'
+      })
     }
   }
 });

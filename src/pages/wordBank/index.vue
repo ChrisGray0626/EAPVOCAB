@@ -13,11 +13,6 @@
       <u-image src="/static/images/empty.png"></u-image>
       <text>No Words In The Bank</text>
     </view>
-    <view class="saveBtn">
-      <u-button shape="circle" type="primary" @click="getAIQuiz">
-        <text>AI-Generated Question</text>
-      </u-button>
-    </view>
   </view>
   <!--  悬浮按钮-->
   <view>
@@ -65,7 +60,7 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 
-import {fetchVocabularyBank, fetchWordsInSection, fetchAIQuestion4Word, addWordItem} from '@/services'
+import {fetchVocabularyBank, fetchWordsInSection, addWordItem} from '@/services'
 
 export default defineComponent({
   data() {
@@ -113,17 +108,6 @@ export default defineComponent({
         fetchWordsInSection(data).then((res: any) => {
           this.words = res.data.data
         })
-      })
-    },
-    // TODO getAiQs
-    getAIQuiz() {
-      uni.showLoading({
-        title: 'Loading'
-      });
-      const data = {word: "fantasy"}
-      fetchAIQuestion4Word(data).then(response => {
-        console.log(response)
-        uni.hideLoading()
       })
     },
     triggerFab(e: any) {

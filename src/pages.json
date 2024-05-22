@@ -26,6 +26,9 @@
     },
     {
       "path": "pages/wordBank/index"
+    },
+    {
+      "path": "pages/wordTest/index"
     }
   ],
   "globalStyle": {
