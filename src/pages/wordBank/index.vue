@@ -41,33 +41,31 @@
         @cancel="cancelAddWordModal"
         width="300px"
     >
-      <view>
-        <u-form>
-          <view class='inputBox'>
-            <view class='inputLabel'>Word</view>
-            <u-form-item borderBottom="true">
-              <input
-                  v-model="word"
-                  placeholder="Please input the word"
-              />
-            </u-form-item>
-          </view>
-          <view class='inputBox'>
-            <text class='inputLabel'>Explanation</text>
-            <uni-easyinput type="textarea"
-                           v-model="explanation"
-                           placeholder="Please input the explanation"
+      <u-form>
+        <view class='inputBox'>
+          <view class='inputLabel'>Word</view>
+          <u-form-item borderBottom="true">
+            <input
+                v-model="word"
+                placeholder="Please input the word"
             />
-          </view>
-        </u-form>
-      </view>
+          </u-form-item>
+        </view>
+        <view class='inputBox'>
+          <text class='inputLabel'>Explanation</text>
+          <uni-easyinput type="textarea"
+                         v-model="explanation"
+                         placeholder="Please input the explanation"
+          />
+        </view>
+      </u-form>
     </u-modal>
   </view>
 </template>
 <script lang="ts">
 import {defineComponent} from 'vue'
 
-import {fetchVocabularyBank, fetchWordsInSection, getAiQs, addWordItem} from '@/services'
+import {fetchVocabularyBank, fetchWordsInSection, fetchAIQuestion4Word, addWordItem} from '@/services'
 
 export default defineComponent({
   data() {
@@ -84,10 +82,10 @@ export default defineComponent({
           iconPath: "/src/static/images/input.svg",
           text: "Input",
         },
-        {
-          iconPath: "/src/static/images/file.svg",
-          text: "File",
-        },
+        // {
+        //   iconPath: "/src/static/images/file.svg",
+        //   text: "File",
+        // },
       ],
       isAddWordShowed: false,
       word: '',
@@ -119,9 +117,13 @@ export default defineComponent({
     },
     // TODO getAiQs
     getAIQuiz() {
-      let queryParams = {word: "test"}
-      getAiQs(queryParams).then(response => {
+      uni.showLoading({
+        title: 'Loading'
+      });
+      const data = {word: "fantasy"}
+      fetchAIQuestion4Word(data).then(response => {
         console.log(response)
+        uni.hideLoading()
       })
     },
     triggerFab(e: any) {

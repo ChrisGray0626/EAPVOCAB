@@ -55,7 +55,6 @@
 </template>
 <script lang="ts">
 import {defineComponent} from 'vue'
-import './index.less'
 
 export default defineComponent({
   data() {
@@ -82,3 +81,6 @@ export default defineComponent({
   },
 });
 </script>
+<style lang="less" scoped>
+@import './index.less';
+</style>

@@ -32,7 +32,6 @@
 </template>
 <script lang="ts">
 import {defineComponent} from 'vue'
-import './index.less'
 
 import {fetchUserInfo, handleLogin} from "@/services"
 
@@ -85,3 +84,6 @@ export default defineComponent({
   }
 });
 </script>
+<style lang="less" scoped>
+@import './index.less';
+</style>

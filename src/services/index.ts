@@ -63,10 +63,9 @@ export function getVocabularyLib() {
 /**
  * 根据单词返回ai生成的问题
  */
-export function getAiQs(query) {
+export function fetchAIQuestion4Word(data: any) {
     return httpService.get({
-        url: baseURL + 'ai/get_ai_questions_for_word',
-        data: query
+        url: baseURL + 'ai/get_ai_questions_for_word?word=' + data.word,
     })
 }
 
