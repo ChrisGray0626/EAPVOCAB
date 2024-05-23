@@ -48,7 +48,7 @@
       </view>
     </view>
     <view class="saveBtn">
-      <u-button shape="circle" type="primary" @click="savePlan">Save Plan</u-button>
+      <u-button shape="circle" type="primary" @click.stop="savePlan">Save Plan</u-button>
     </view>
 
   </view>

@@ -70,7 +70,7 @@
       </view>
     </view>
     <view class='startWords'>
-      <u-button shape="circle" type='primary' @click="goToWordTest()">
+      <u-button shape="circle" type='primary' @click.stop="goToWordTest">
         <text>Start Quiz !</text>
       </u-button>
     </view>

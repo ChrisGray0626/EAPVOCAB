@@ -6,32 +6,52 @@
   box-sizing: border-box;
 }
 
-.myWord{
-
-
+.questionBox {
   display: flex;
   flex-direction: column;
-  // font-family: Georgia, serif;
-  .words{
+  justify-content: flex-start;
+  align-items: flex-start;
+  height: 60vh;
+  margin: 2vw;
 
-    font-size: 1.5rem;
-    font-weight:700;
-    margin: 10px 0;
+  .question {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 1vh;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    .option {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: flex-start;
+      margin: 1vh;
+
+      radio {
+        margin-right: 1vw;
+      }
+      text {
+        font-size: 18px;
+      }
+    }
   }
 }
 
-.saveBtn{
-  display: flex;
-  margin: 0 auto;
-  width: 100%;
-  padding: 10px;
-  View{
-    width: 250px;
-    font-weight: 600;
-  }
-  .falseButton{
-    color: red;
-    border: 2px red solid;
-  }
+.pagination {
+  height: 10vh;
 
+}
+
+.confirmButton {
+  height: 10vh;
+
+  text {
+    font-size: 16px;
+  }
 }

@@ -44,7 +44,7 @@
                 border="none"
             />
           </u-form-item>
-          <u-button type='primary' class="sendCodeButton" @click="sendCode">
+          <u-button type='primary' class="sendCodeButton" @click.stop="sendCode">
             {{ isSending ? 'Sending..' : countDown > 0 ? `$Try again in {countDown} seconds` : 'Send Verification Code' }}
           </u-button>
         </view>

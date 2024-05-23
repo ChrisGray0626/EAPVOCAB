@@ -25,8 +25,8 @@
           />
         </u-form-item>
       </view>
-      <u-button type='primary' class='SignInButton' @click="login">Sign in</u-button>
-      <u-button type='primary' :plain="true" class='SignUpButton' @click="goToRegister">Sign up</u-button>
+      <u-button type='primary' class='SignInButton' @click.stop="login">Sign in</u-button>
+      <u-button type='primary' :plain="true" class='SignUpButton' @click.stop="goToRegister">Sign up</u-button>
     </u-form>
   </view>
 </template>
