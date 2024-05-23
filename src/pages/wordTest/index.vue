@@ -8,8 +8,8 @@
       <view class="options">
         <radio-group @change="radioChange">
           <view v-for="(item, index) in currentQuestion.options" :key="index">
-            <view class="option">
-              <radio :value="index.toString()" :checked="index === currentAnswer.selectedAnswer"/>
+            <view class="option"  :id="String(currentIndex) + String(index)">
+              <radio :value="index" :checked="index === currentAnswer.selectedAnswer"/>
               <text>{{ item }}</text>
               <text>{{index}}</text>
               <text>{{currentAnswer.selectedAnswer}}</text>
@@ -120,7 +120,7 @@ export default defineComponent({
     // },
     radioChange(e: any) {
       // 监听选择
-     this.currentAnswer.selectedAnswer = e.detail.value
+     this.currentAnswer.selectedAnswer = Number(e.detail.value)
       // console.log("answers", this.answers)
     },
     paginationChange(e: any) {
