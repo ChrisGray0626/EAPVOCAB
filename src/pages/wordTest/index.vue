@@ -9,8 +9,10 @@
         <radio-group @change="radioChange">
           <view v-for="(item, index) in currentQuestion.options" :key="index">
             <view class="option">
-              <radio :value="index.toString()" :checked="index === answers[currentIndex - 1].selectedAnswer"/>
+              <radio :value="index.toString()" :checked="index === currentAnswer.selectedAnswer"/>
               <text>{{ item }}</text>
+              <text>{{index}}</text>
+              <text>{{currentAnswer.selectedAnswer}}</text>
             </view>
           </view>
         </radio-group>
@@ -21,6 +23,7 @@
       <uni-pagination
           :total="questionCount"
           :pageSize="1"
+          :current="currentIndex"
           :show-icon="true"
           @change="paginationChange"
       />
@@ -56,7 +59,6 @@ export default defineComponent({
       questions: [] as Question[],
       answers: [] as Answer[],
       currentIndex: 1,
-      // selectedAnswer: -1,
       isShowFinishedModal: false,
     };
   },
@@ -86,7 +88,9 @@ export default defineComponent({
       answer: answer
     })
     // 初始化答案
-    this.answers = new Array(this.questions.length).fill({selectedAnswer: -1, isCorrect: false})
+    for (let i = 0; i < this.questions.length; i++) {
+      this.answers.push({selectedAnswer: -1, isCorrect: false})
+    }
   },
   computed: {
     questionCount() {
@@ -95,11 +99,11 @@ export default defineComponent({
     currentQuestion() {
       return this.questions[this.currentIndex - 1]
     },
-    // currentAnswer() {
-    //   return this.answers[this.currentIndex - 1]
-    // },
+    currentAnswer() {
+      return this.answers[this.currentIndex - 1]
+    },
     isFinished() {
-      console.log("answers", this.answers)
+      // console.log("answers", this.answers)
       return this.answers.every(item => item.isCorrect)
     }
   },
@@ -116,17 +120,17 @@ export default defineComponent({
     // },
     radioChange(e: any) {
       // 监听选择
-      this.answers.splice(this.currentIndex - 1, 1, {selectedAnswer: e.detail.value, isCorrect: false})
-      // this.answers[this.currentIndex - 1].selectedAnswer = e.detail.value
-      console.log("answers", this.answers)
+     this.currentAnswer.selectedAnswer = e.detail.value
+      // console.log("answers", this.answers)
     },
     paginationChange(e: any) {
       this.currentIndex = e.current
     },
     confirmAnswer() {
       // console.log("answers", this.answers)
-      this.answers[this.currentIndex - 1].isCorrect = Number(this.answers[this.currentIndex - 1].selectedAnswer) === this.currentQuestion.answer
-      if (this.answers[this.currentIndex - 1].isCorrect) {
+      // 判断正误情况
+      this.currentAnswer.isCorrect = Number(this.currentAnswer.selectedAnswer) === this.currentQuestion.answer
+      if (this.currentAnswer.isCorrect) {
         uni.showToast({
           title: 'Correct',
           icon: 'success'
