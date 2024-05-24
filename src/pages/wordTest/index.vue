@@ -1,6 +1,5 @@
 <template>
   <view class="content">
-    <!--    TODO word test-->
     <view class="questionBox">
       <view class="question">
         <text>{{ currentQuestion.question }}</text>

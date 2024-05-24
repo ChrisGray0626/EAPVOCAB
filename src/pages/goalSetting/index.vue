@@ -30,7 +30,7 @@
     <u-divider/>
 
     <view class="goalPicker">
-<!--      TODO ActionSheet-->
+<!--      TODO picker-view-->
       <view class="selectedPlan" @click="show">
         <text>Your Study Plan: {{ selectedPlan }}</text>
       </view>

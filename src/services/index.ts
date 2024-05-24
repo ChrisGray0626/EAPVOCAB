@@ -4,15 +4,6 @@ const baseURL= 'http://114.55.87.45:8001/'
 // const baseURL = 'api/'
 
 /**
- * 获取词汇bank
- */
-export function getVocabularyBank() {
-    return httpService.get({
-        url: baseURL + "get_vocabulary_bank",
-    })
-}
-
-/**
  * 获取用户信息
  */
 export function fetchUserInfo() {
@@ -46,6 +37,20 @@ export function fetchWordsInSection(data: any) {
 export function addWordItem(data: any) {
     return httpService.post({
         url: baseURL + "upload_one_word",
+        data: data,
+    })
+}
+
+export function addWords(data: any) {
+    return httpService.post({
+        url: baseURL + "upload_words_by_dict",
+        data: data,
+    })
+}
+
+export function fetchWordsFromPassage(data: any) {
+    return httpService.post({
+        url: baseURL + "ai/get_important_words_for_passage",
         data: data,
     })
 }

@@ -34,14 +34,14 @@
         :showCancelButton="true"
         @confirm="confirmAddWordModal"
         @cancel="cancelAddWordModal"
-        width="300px"
+        width="40vw"
     >
       <u-form>
         <view class='inputBox'>
           <view class='inputLabel'>Word</view>
           <u-form-item borderBottom="true">
             <input
-                v-model="word"
+                v-model="addedWord"
                 placeholder="Please input the word"
             />
           </u-form-item>
@@ -49,18 +49,48 @@
         <view class='inputBox'>
           <text class='inputLabel'>Explanation</text>
           <uni-easyinput type="textarea"
-                         v-model="explanation"
+                         v-model="addedExplanation"
                          placeholder="Please input the explanation"
           />
         </view>
       </u-form>
     </u-modal>
   </view>
+  <!--  通过句子添加单词弹窗-->
+  <view>
+    <u-modal
+        :show="isAddWordFromPassageShowed"
+        confirmText="Confirm"
+        cancelText="Cancel"
+        :showCancelButton="true"
+        @confirm="confirmAddWordFromPassageModal"
+        @cancel="cancelAddWordFromPassageModal"
+        width="40vw"
+    >
+      <view class='inputBox'>
+        <u-form>
+          <text class='inputLabel'>Passage</text>
+          <uni-easyinput type="textarea"
+                         v-model="passage"
+                         placeholder="Please input the passage"
+                         maxlength="-1"
+          />
+          <view class="button">
+            <u-button type="primary" @click.stop="getWordsFromPassage">
+              <text>Generate</text>
+            </u-button>
+          </view>
+          <uni-data-checkbox mode="button" multiple v-model="isChecks" :localdata="checkBoxRanges"></uni-data-checkbox>
+        </u-form>
+      </view>
+
+    </u-modal>
+  </view>
 </template>
 <script lang="ts">
 import {defineComponent} from 'vue'
 
-import {fetchVocabularyBank, fetchWordsInSection, addWordItem} from '@/services'
+import {fetchVocabularyBank, fetchWordsInSection, addWordItem, fetchWordsFromPassage, addWords} from '@/services'
 
 export default defineComponent({
   data() {
@@ -74,17 +104,30 @@ export default defineComponent({
       }[],
       fabContent: [
         {
-          iconPath: "/src/static/images/input.svg",
-          text: "Input",
+          iconPath: "/src/static/images/word.svg",
+          text: "Word",
         },
-        // {
-        //   iconPath: "/src/static/images/file.svg",
-        //   text: "File",
-        // },
+        {
+          iconPath: "/src/static/images/passage.svg",
+          text: "Passage",
+        },
       ],
+
       isAddWordShowed: false,
-      word: '',
-      explanation: "",
+      addedWord: "",
+      addedExplanation: "",
+
+      isAddWordFromPassageShowed: false,
+      passage: "",
+      isChecks: [] as Number[],
+      candidateWords: [] as {
+        word: string,
+        explanation: string,
+      }[],
+      checkBoxRanges: [] as {
+        value: number,
+        text: string,
+      }[]
     };
   },
   mounted() {
@@ -96,6 +139,7 @@ export default defineComponent({
     },
   },
   methods: {
+    // 加载单词列表
     loadWords() {
       fetchVocabularyBank().then((res: any) => {
         let data = res.data.data
@@ -110,22 +154,28 @@ export default defineComponent({
         })
       })
     },
+    // 触发悬浮按钮
     triggerFab(e: any) {
       const index = e.index
-      if (index == 0) {
+      if (index === 0) {
         this.showAddWordModal()
-      } else {
-        // TODO file
+      } else if (index === 1) {
+        this.showAddWordFromPassageModal()
       }
     },
+    // 添加单词弹窗
+    initAddWordModal() {
+      this.addedWord = ""
+      this.addedExplanation = ""
+    },
     confirmAddWordModal() {
-      this.closeAddWordModal()
       this.handleAddWordItem()
     },
     cancelAddWordModal() {
       this.closeAddWordModal()
     },
     showAddWordModal() {
+      this.initAddWordModal()
       this.isAddWordShowed = true
     },
     closeAddWordModal() {
@@ -134,16 +184,81 @@ export default defineComponent({
     handleAddWordItem() {
       const data = {
         voc_sec_id: this.voc_sec_id,
-        word: this.word,
-        explanation: this.explanation,
+        word: this.addedWord,
+        explanation: this.addedExplanation,
       }
       addWordItem(data).then((res: any) => {
         if (res.data.code === 20000) {
+          this.closeAddWordModal()
           uni.showToast({title: "Add successfully!", icon: 'success'})
           this.loadWords()
         }
       })
     },
+    // 通过句子添加单词弹窗
+    initAddWordFromPassageModal() {
+      this.passage = ""
+      this.isChecks = []
+      this.candidateWords = []
+      this.checkBoxRanges = []
+    },
+    confirmAddWordFromPassageModal() {
+      this.handleAddWordFromPassage()
+    },
+    cancelAddWordFromPassageModal() {
+      this.closeAddWordFromPassageModal()
+    },
+    showAddWordFromPassageModal() {
+      this.initAddWordFromPassageModal()
+      this.isAddWordFromPassageShowed = true
+    },
+    closeAddWordFromPassageModal() {
+      this.isAddWordFromPassageShowed = false
+    },
+    getWordsFromPassage() {
+      // 加载中
+      uni.showLoading({title: "Generating words..."})
+      const data = {
+        passage: this.passage,
+      }
+      console.log("data", data)
+      fetchWordsFromPassage(data).then((res: any) => {
+        // 加载完成
+        uni.hideLoading()
+        if (res.data.code === 20000) {
+          this.initAddWordFromPassageModal()
+          this.candidateWords = res.data.data.words
+          this.loadCheckBox()
+        } else {
+          uni.showToast({title: "Failed to generate words. Please try again!", icon: 'error'})
+        }
+      })
+    },
+    loadCheckBox() {
+      const n = this.candidateWords.length
+      for (let i = 0; i < n; i++) {
+        this.isChecks.push(i)
+        this.checkBoxRanges.push({value: i, text: this.candidateWords[i].word})
+      }
+    },
+    handleAddWordFromPassage() {
+      // 获取选中的单词
+      const selectedWords = this.isChecks.map((index) => {
+        return this.candidateWords[index]
+      })
+      const data = {
+        voc_sec_id: this.voc_sec_id,
+        words: selectedWords,
+      }
+      addWords(data).then((res: any) => {
+        if (res.data.code === 20000) {
+          this.closeAddWordFromPassageModal()
+          uni.showToast({title: "Add successfully!", icon: 'success'})
+          // 刷新单词列表
+          this.loadWords()
+        }
+      })
+    }
   },
 })
 </script>

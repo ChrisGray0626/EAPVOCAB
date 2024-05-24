@@ -11,7 +11,7 @@ function handleRequestPermission() {
                 uni.setStorageSync('token', token)
                 // console.log('set token: ', token)
             }
-            else if (res.statusCode === 401 || res.data.code === 0) {
+            else if (res.statusCode === 401) {
                 uni.removeStorageSync('token')
                 uni.showModal({
                     title: 'Warning',
