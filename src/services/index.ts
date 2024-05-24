@@ -1,7 +1,7 @@
-import httpService from './baseRequest';
+import httpService from "./baseRequest";
 
-const baseURL= 'http://114.55.87.45:8001/'
-// const baseURL = 'api/'
+const baseURL= "http://114.55.87.45:8001/"
+// const baseURL = "api/"
 
 /**
  * 获取用户信息
@@ -23,7 +23,7 @@ export function fetchVocabularyBank() {
 
 /**
  * 获取词汇库的词汇列表
- *  // ?voc_lib_id=' + 1 + '&voc_sec_id=' + 1,
+ *  // ?voc_lib_id=" + 1 + "&voc_sec_id=" + 1,
  */
 export function fetchWordsInSection(data: any) {
     return httpService.get({
@@ -57,11 +57,20 @@ export function fetchWordsFromPassage(data: any) {
 
 
 /**
- * 获取词汇表
+ * 获取用户的词库
  */
-export function getVocabularyLib() {
+export function fetchVocLib() {
     return httpService.get({
-        url: baseURL + 'get_vocabulary_lib',
+        url: baseURL + "get_vocabulary_lib",
+    })
+}
+
+/**
+ * 获取词库的单元
+ */
+export function fetchVocSection(data: any) {
+    return httpService.get({
+        url: baseURL + "get_vocabulary_sections?id=" + data.id,
     })
 }
 
@@ -70,14 +79,14 @@ export function getVocabularyLib() {
  */
 export function fetchAIQuestion4Word(data: any) {
     return httpService.get({
-        url: baseURL + 'ai/get_ai_questions_for_word?word=' + data.word,
+        url: baseURL + "ai/get_ai_questions_for_word?word=" + data.word,
     })
 }
 
 /** 登录  */
 export function handleLogin(data: any) {
     return httpService.post({
-        url: baseURL + 'user/login',
+        url: baseURL + "user/login",
         data: data,
         timeout: 100000,
     })
@@ -88,7 +97,7 @@ export function handleLogin(data: any) {
  */
 export function handleRegister(data: any) {
     return httpService.post({ // 这里用request
-        url: baseURL + 'user/register',
+        url: baseURL + "user/register",
         data: data,
         timeout: 100000,
     })
@@ -99,7 +108,7 @@ export function handleRegister(data: any) {
  */
 export function sendVerificationCode(data: any) {
     return  httpService.post({ // 这里用request
-        url: baseURL + 'user/send_captcha',
+        url: baseURL + "user/send_captcha",
         data: data,
         timeout: 100000,
     })

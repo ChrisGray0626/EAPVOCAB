@@ -67,7 +67,7 @@ export default defineComponent({
       ],
       items2: [
         {src: '../../static/images/battle.png', width: '100', height: '100', text: 'Word Battle'},
-        {src: '../../static/images/quiz.png', width: '100', height: '100', text: 'Class Quiz'},
+        {src: '../../static/images/quiz.png', width: '100', height: '100', text: 'In-Class Quiz'},
         {src: '../../static/images/game.png', width: '100', height: '100', text: 'Class Activity'}
       ]
     };

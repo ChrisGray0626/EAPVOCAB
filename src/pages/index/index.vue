@@ -71,7 +71,7 @@
     </view>
     <view class='startWords'>
       <u-button shape="circle" type='primary' @click.stop="goToWordTest">
-        <text>Start Quiz !</text>
+        <text>Start Self Quiz !</text>
       </u-button>
     </view>
 

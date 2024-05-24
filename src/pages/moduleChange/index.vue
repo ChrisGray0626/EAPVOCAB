@@ -1,41 +1,71 @@
 <template>
-<!--  TODO getVocabularyLib-->
   <view class="content">
-    <uni-collapse v-for="(module, index) in modules" :key="index" :accordion="true">
-      <uni-collapse-item :title="module.title" icon="bookmark-fill">
-        <uni-list>
-          <uni-list-item v-for="(word, index) in module.words" :key="index">
-            <template v-slot:body>
-              <view class="item">
-                <text>{{ word }}</text>
-              </view>
-            </template>
-            <text>{{ word }}</text>
-            <uni-icons type="right" size="14"></uni-icons>
-          </uni-list-item>
-        </uni-list>
-      </uni-collapse-item>
-    </uni-collapse>
-
+      <uni-collapse v-for="lib in vocLibs" :key="lib.id" accordion>
+        <uni-collapse-item :title="lib.name" icon="bookmark-fill">
+          <uni-list>
+            <uni-list-item v-for="section in lib.sections" :key="section.id">
+              <template v-slot:body>
+                <view class="item">
+                  <text>{{ section.sec_name }}</text>
+                </view>
+              </template>
+              <text>{{ section.sec_name }}</text>
+              <uni-icons type="right" size="14"></uni-icons>
+            </uni-list-item>
+          </uni-list>
+        </uni-collapse-item>
+      </uni-collapse>
   </view>
 </template>
 
 <script lang="ts">
 import {defineComponent} from "vue";
+import {fetchVocLib, fetchVocSection} from "@/services";
 
 export default defineComponent({
   data() {
     return {
-      openList: [],
-      modules: [
-        {title: 'EAP033', words: ['This is list 1', 'This is list 2', 'This is list 3']},
-        {title: 'EAP015', words: ['Test 1', 'Test 2', 'Test 3', 'Test 4']},
-      ],
+      vocLibs: [] as VocLib[],
     };
   },
-  methods: {},
+
+  mounted() {
+    this.getVocLib();
+  },
+
+  methods: {
+    getVocLib() {
+      fetchVocLib().then((res) => {
+        if (res.data.code == 20000) {
+          this.vocLibs = res.data.data;
+          this.vocLibs.forEach((item) => {
+            const data = {
+              id: item.id
+            }
+            fetchVocSection(data).then((res) => {
+              if (res.data.code == 20000) {
+                item.sections = res.data.data;
+              }
+            });
+          });
+        }
+      });
+    },
+  },
 });
 
+interface VocLib {
+  id: number;
+  name: string;
+  total_word_count: number;
+  "progress": 0,
+  sections: Section[];
+}
+
+interface Section {
+  id: number;
+  sec_name: string;
+}
 </script>
 <style lang="less" scoped>
 @import './index.less';
