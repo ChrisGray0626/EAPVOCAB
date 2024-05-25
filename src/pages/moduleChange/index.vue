@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import {defineComponent} from "vue";
-import {fetchVocLib, fetchVocSection} from "@/services";
+import {fetchUserVocLibs, fetchVocSection} from "@/services";
 
 export default defineComponent({
   data() {
@@ -35,7 +35,7 @@ export default defineComponent({
 
   methods: {
     getVocLib() {
-      fetchVocLib().then((res) => {
+      fetchUserVocLibs().then((res) => {
         if (res.data.code == 20000) {
           this.vocLibs = res.data.data;
           this.vocLibs.forEach((item) => {

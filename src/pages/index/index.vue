@@ -28,7 +28,7 @@
       <view class="englishContent">
         <view class="bookInfo">
           <view class="bookName">
-            <text>EAP033</text>
+            <text>{{userInfo.cur_lib_name}}</text>
           </view>
           <view class="edit" @click="goToGoalSetting">
             <text>Change</text>
@@ -86,8 +86,15 @@ import {fetchUserInfo} from "@/services";
 export default defineComponent({
   data() {
     return {
-      userInfo: {} as { username: string; email: string },
+      userInfo: {} as {
+        username: string;
+        email: string,
+        role: string,
+        cur_lib: number,
+        cur_lib_name: string,
+      },
       avatarUrl: "../../static/images/boy_avatar.png",
+      curLibName: "",
       remainWords: 3272,
       studiedWords: 666,
       remainDayNum: 100,

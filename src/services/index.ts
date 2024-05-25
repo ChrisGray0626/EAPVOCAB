@@ -59,7 +59,7 @@ export function fetchWordsFromPassage(data: any) {
 /**
  * 获取用户的词库
  */
-export function fetchVocLib() {
+export function fetchUserVocLibs() {
     return httpService.get({
         url: baseURL + "get_vocabulary_lib",
     })
@@ -77,9 +77,19 @@ export function fetchVocSection(data: any) {
 /**
  * 根据单词返回ai生成的问题
  */
-export function fetchAIQuestion4Word(data: any) {
+export function fetchSelfQuiz(data: any) {
     return httpService.get({
-        url: baseURL + "ai/get_ai_questions_for_word?word=" + data.word,
+        url: baseURL + "ai/get_ai_quiz?voc_lib_id=" + data.voc_lib_id,
+    })
+}
+
+/**
+ * 自测单词通过
+ */
+export function passWordQuiz(data: any) {
+    return httpService.post({
+        url: baseURL + "pass_word",
+        data: data,
     })
 }
 
