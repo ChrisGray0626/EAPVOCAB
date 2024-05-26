@@ -28,7 +28,7 @@
       <view class="englishContent">
         <view class="bookInfo">
           <view class="bookName">
-            <text>{{userInfo.cur_lib_name}}</text>
+            <text>{{ userInfo.cur_lib_name }}</text>
           </view>
           <view class="edit" @click="goToGoalSetting">
             <text>Change</text>
@@ -114,15 +114,12 @@ export default defineComponent({
   },
   methods: {
     getUserInfo() {
-      this.userInfo = uni.getStorageSync('userInfo')
-      if (!this.userInfo) {
-        const token = uni.getStorageSync('token')
-        if (token != '') {
-          fetchUserInfo().then((res: any) => {
-            this.userInfo = res.data.data
-            uni.setStorageSync('userInfo', this.userInfo)
-          })
-        }
+      const token = uni.getStorageSync('token')
+      if (token != '') {
+        fetchUserInfo().then((res: any) => {
+          this.userInfo = res.data.data
+          uni.setStorageSync('userInfo', this.userInfo)
+        })
       }
     },
     goToLogin() {

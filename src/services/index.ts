@@ -12,6 +12,13 @@ export function fetchUserInfo() {
     })
 }
 
+export function setCurrentVocLib(data: any) {
+    return httpService.post({
+        url: baseURL + "user/set_cur_lib",
+        data: data,
+    })
+}
+
 /**
  * 获取用户的词汇库
  */

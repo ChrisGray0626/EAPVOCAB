@@ -6,7 +6,7 @@
       <!-- 单词表的描述 -->
       <view class="bookDetails">
         <view class="bookName">
-          <text>EAP033</text>
+          <text>{{ curLibName }}</text>
           <navigator hover-class="none" url="/pages/moduleChange/index">
             <view class="changeModule">
               <text>Change Module</text>
@@ -55,10 +55,12 @@
 </template>
 <script lang="ts">
 import {defineComponent} from 'vue'
+import {fetchUserInfo} from "@/services";
 
 export default defineComponent({
   data() {
     return {
+      curLibName: "",
       isShow: true,
       remainWords: 3272,
       studiedWords: 666,
@@ -68,6 +70,9 @@ export default defineComponent({
   },
   created() {
     this.initAlternativePlans()
+  },
+  onShow() {
+    this.getCurLib()
   },
   computed: {
     studiedPercentage(): number {
@@ -85,6 +90,15 @@ export default defineComponent({
       }
       this.alternativePlans.push(ll)
       this.selectedPlan = this.alternativePlans[0][0]
+    },
+    getCurLib() {
+      const token = uni.getStorageSync('token')
+      if (token != '') {
+        fetchUserInfo().then((res: any) => {
+          const userInfo = res.data.data
+          this.curLibName = userInfo.cur_lib_name
+        })
+      }
     },
     confirm(e: any) {
       this.isShow = false
