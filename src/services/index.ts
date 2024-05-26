@@ -86,11 +86,26 @@ export function fetchSelfQuiz(data: any) {
 /**
  * 自测单词通过
  */
-export function passWordQuiz(data: any) {
+export function setWordQuizPass(data: any) {
     return httpService.post({
         url: baseURL + "pass_word",
         data: data,
     })
+}
+
+export function fetchInClassQuiz(data: any) {
+    return httpService.post({
+        url: baseURL + "in_class_quiz/get_in_class_quiz",
+        data: data,
+    })
+}
+
+export function setInClassQuizResult(data: any) {
+    return httpService.post({
+        url: baseURL + "in_class_quiz/set_in_class_quiz_result",
+        data: data,
+    })
+
 }
 
 /** 登录  */

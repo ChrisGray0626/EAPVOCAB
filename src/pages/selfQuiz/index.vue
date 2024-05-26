@@ -18,8 +18,8 @@
         </radio-group>
       </view>
     </view>
+    <!--        翻页器-->
     <view class="pagination">
-      <!--        翻页器-->
       <uni-pagination
           :total="curTotalQuestionCount"
           :pageSize="1"
@@ -34,10 +34,10 @@
       </u-button>
     </view>
   </view>
+  <!--    完成弹窗-->
   <view>
-    <!--    完成弹窗-->
     <u-modal
-        :show="isShowFinishedModal"
+        :show="isFinishedModalShowed"
         confirmText="Confirm"
         cancelText="Cancel"
         :showCancelButton="true"
@@ -51,7 +51,7 @@
 </template>
 <script lang="ts">
 import {defineComponent} from 'vue'
-import {fetchSelfQuiz, passWordQuiz} from "@/services";
+import {fetchSelfQuiz, setWordQuizPass} from "@/services";
 
 export default defineComponent({
   data() {
@@ -60,7 +60,7 @@ export default defineComponent({
       answers: [] as Answer[][],
       curWordQuizIdx: 0,
       curQuestionIdx: 0,
-      isShowFinishedModal: false,
+      isFinishedModalShowed: false,
     };
   },
   created() {
@@ -114,11 +114,11 @@ export default defineComponent({
         this.wordQuizzes = res.data.data
         // console.log("wordQuestions", this.wordQuestions)
         // 初始化答案
-        this.initAnswers()
+        this.initAnswer()
         uni.hideLoading()
       })
     },
-    initAnswers() {
+    initAnswer() {
       for (let i = 0; i < this.totalWordQuizCount; i++) {
         const totalQuestionCount = this.wordQuizzes[i].questions.length
         this.answers[i] = new Array(totalQuestionCount)
@@ -163,14 +163,14 @@ export default defineComponent({
             word_id: this.curWordQuiz.word_id
           }
           // 发送通过请求
-          passWordQuiz(data).then((res: any) => {
+          setWordQuizPass(data).then((res: any) => {
             // console.log("passWordQuiz", res)
           })
         }
       }
       // 判断完成情况
       if (this.isFinished) {
-        this.isShowFinishedModal = true
+        this.showFinishedModal()
         return
       }
       // 翻页
@@ -181,7 +181,7 @@ export default defineComponent({
       }
     },
     confirmFinishedModal() {
-      this.isShowFinishedModal = false
+      this.closeFinishedModal()
       uni.showToast({
         title: 'Submit successfully',
         icon: 'success'
@@ -189,7 +189,13 @@ export default defineComponent({
       this.goBack()
     },
     cancelFinishedModal() {
-      this.isShowFinishedModal = false
+      this.closeFinishedModal()
+    },
+    showFinishedModal() {
+      this.isFinishedModalShowed = true
+    },
+    closeFinishedModal() {
+      this.isFinishedModalShowed = false
     },
     goBack() {
       uni.navigateBack()

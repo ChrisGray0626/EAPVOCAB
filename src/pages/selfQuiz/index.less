@@ -1,0 +1,64 @@
+.content {
+  padding: 20px;
+  margin: 0 auto;
+  max-width: 1600px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.questionBox {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  height: 60vh;
+  margin: 2vw;
+
+  .word {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 1vh;
+  }
+
+  .question {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 1vh;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    .option {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: flex-start;
+      margin: 1vh;
+
+      radio {
+        margin-right: 1vw;
+      }
+
+      text {
+        font-size: 18px;
+      }
+    }
+  }
+}
+
+.pagination {
+  height: 10vh;
+
+}
+
+.confirmButton {
+  height: 10vh;
+
+  text {
+    font-size: 16px;
+  }
+}

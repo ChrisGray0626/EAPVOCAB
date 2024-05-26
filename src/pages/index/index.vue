@@ -142,7 +142,7 @@ export default defineComponent({
     },
     goToWordTest() {
       uni.navigateTo({
-        url: '/pages/wordTest/index'
+        url: '/pages/selfQuiz/index'
       })
     }
   }

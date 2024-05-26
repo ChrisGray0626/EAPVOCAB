@@ -28,7 +28,10 @@
       "path": "pages/wordBank/index"
     },
     {
-      "path": "pages/wordTest/index"
+      "path": "pages/selfQuiz/index"
+    },
+        {
+      "path": "pages/inClassQuiz/index"
     }
   ],
   "globalStyle": {
