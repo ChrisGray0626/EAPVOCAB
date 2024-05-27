@@ -30,21 +30,18 @@
     <u-divider/>
 
     <view class="goalPicker">
-<!--      TODO picker-view-->
       <view class="selectedPlan" @click="show">
-        <text>Your Study Plan: {{ selectedPlan }}</text>
+        <text>Your Study Plan: {{ selectedDailyWordNum }} words {{selectedDayNum}} days</text>
       </view>
       <view>
-        <u-picker
-            :columns="alternativePlans"
-            :show="isShow"
-            cancelText="Cancel"
-            confirmText="Confirm"
-            keyName="label"
-            title="Study Plan"
-            @cancel="cancel"
-            @confirm="confirm"
-        />
+        <picker-view :value="pickerIdx" @change="pickerChange">
+          <picker-view-column>
+            <view class="item" v-for="(item, index) in dailyWordNums" :key="index">{{ item }} words</view>
+          </picker-view-column>
+          <picker-view-column>
+            <view class="item" v-for="(item, index) in dayNums" :key="index">{{ item }} days</view>
+          </picker-view-column>
+        </picker-view>
       </view>
     </view>
     <view class="saveBtn">
@@ -66,6 +63,9 @@ export default defineComponent({
       studiedWords: 666,
       alternativePlans: [] as string[][],
       selectedPlan: "",
+      dailyWordNums: [] as Number[],
+      dayNums: [] as Number[],
+      pickerIdx: [0, 0]
     }
   },
   created() {
@@ -77,15 +77,29 @@ export default defineComponent({
   computed: {
     studiedPercentage(): number {
       return this.studiedWords / this.remainWords * 100
+    },
+    selectedDailyWordNum() {
+      return this.dailyWordNums[this.pickerIdx[0]]
+    },
+    selectedDayNum() {
+      return this.dayNums[this.pickerIdx[1]]
+    },
+    pickerValue() {
+      return [this.pickerIdx, this.pickerIdx]
     }
   },
 
   methods: {
     initAlternativePlans() {
       let ll = []
-      for (let i = 1; i <= 50; i++) {
+      for (let i = 1; i <= this.remainWords / 5; i++) {
         const dailyWordNum = i * 5
         const dayNum = Math.ceil(this.remainWords / dailyWordNum)
+        if (this.dayNums.slice(-1)[0] === dayNum) {
+          continue
+        }
+        this.dailyWordNums.push(dailyWordNum)
+        this.dayNums.push(dayNum)
         ll.push(`${dailyWordNum} Words ${dayNum} Days`)
       }
       this.alternativePlans.push(ll)
@@ -99,6 +113,19 @@ export default defineComponent({
           this.curLibName = userInfo.cur_lib_name
         })
       }
+    },
+    pickerChange(e: any) {
+      // console.log(e)
+      // 分别比较两个值，如果一个有变化则同步更新另一个
+      const changedValues = e.detail.value
+      let updatedValue = -1
+      if (changedValues[0] !== this.pickerIdx[0]) {
+        updatedValue = changedValues[0]
+      }
+      else if (changedValues[1] !== this.pickerIdx[1]) {
+        updatedValue = changedValues[1]
+      }
+      this.pickerIdx = [updatedValue, updatedValue]
     },
     confirm(e: any) {
       this.isShow = false
