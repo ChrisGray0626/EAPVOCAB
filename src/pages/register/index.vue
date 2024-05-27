@@ -57,7 +57,7 @@
 import {defineComponent} from 'vue'
 
 import {handleRegister, sendVerificationCode} from "@/services"
-
+// TODO register 表单校验
 export default defineComponent({
   data() {
     return {
@@ -80,7 +80,6 @@ export default defineComponent({
       const data = {
         email: this.userInfo.email,
       };
-      // TODO await
       sendVerificationCode(data).then(res => {
         if (res.statusCode !== 500) {
           if (res.data.code == 0) {

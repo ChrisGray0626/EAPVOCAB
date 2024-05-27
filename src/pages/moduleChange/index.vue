@@ -40,7 +40,6 @@
 <script lang="ts">
 import {defineComponent} from "vue";
 import {fetchUserVocLibs, fetchVocSection, setCurrentVocLib} from "@/services";
-// TODO 设置当前课程
 export default defineComponent({
   data() {
     return {
