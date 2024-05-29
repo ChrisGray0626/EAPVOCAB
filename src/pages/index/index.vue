@@ -53,7 +53,7 @@
       </view>
     </view>
     <view class="todayGoal">
-      <text class="goalText">- Today Goal -</text>
+      <text class="goalText">- Today's Goal -</text>
       <view class="goalContent">
         <view class="newWords">
           <text>15</text>

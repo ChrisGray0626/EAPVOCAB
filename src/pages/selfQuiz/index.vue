@@ -17,6 +17,11 @@
           </view>
         </radio-group>
       </view>
+      <!--        显示正确答案-->
+      <view class="correctAnswer" v-if="isCorrectAnswerShowed">
+        <text>Correct answer:</text>
+        {{ curQuestion.options[curQuestion.answer] }}
+      </view>
     </view>
     <!--        翻页器-->
     <view class="pagination">
@@ -28,21 +33,31 @@
           @change="paginationChange"
       />
     </view>
-    <view class="confirmButton">
-      <u-button type="primary" shape="circle" @click.stop="confirmAnswer">
+    <view class="button">
+      <u-button type="primary" shape="circle" @click.stop="handleConfirm">
         <text>Confirm</text>
+      </u-button>
+    </view>
+    <view class="button" v-if="!isLastWord">
+      <u-button type='primary' :plain="true" shape="circle" @click.stop="handleNextWord">
+        <text>Next word</text>
+      </u-button>
+    </view>
+    <view class="button" v-if="isLastWord">
+      <u-button type='primary' :plain="true" shape="circle" @click.stop="handleSubmit">
+        <text>Submit</text>
       </u-button>
     </view>
   </view>
   <!--    完成弹窗-->
   <view>
     <u-modal
-        :show="isFinishedModalShowed"
+        :show="isSubmitModalShowed"
         confirmText="Confirm"
         cancelText="Cancel"
         :showCancelButton="true"
-        @confirm="confirmFinishedModal"
-        @cancel="cancelFinishedModal"
+        @confirm="confirmOfSubmitModal"
+        @cancel="cancelOfSubmitModal"
         width="300px"
     >
       <text>You have finished all tests, do you want to submit?</text>
@@ -60,10 +75,11 @@ export default defineComponent({
       answers: [] as Answer[][],
       curWordQuizIdx: 0,
       curQuestionIdx: 0,
-      isFinishedModalShowed: false,
+      isTry: false,
+      isSubmitModalShowed: false,
     };
   },
-  created() {
+  mounted() {
     this.getSelfQuiz()
     // console.log("answers", this.answers)
   },
@@ -86,19 +102,12 @@ export default defineComponent({
     curAnswer() {
       return this.answers[this.curWordQuizIdx][this.curQuestionIdx]
     },
-    isCurWordQuizFinished() {
-      return this.curQuestionIdx === this.curTotalQuestionCount - 1
+    isCorrectAnswerShowed() {
+      return this.isTry && !this.curAnswer.isCorrect
     },
-    isCurWordQuizPass() {
-      // 任意一题正确即为通过
-      // console.log("curAnswer", this.answers[this.curWordQuizIdx])
-      return this.answers[this.curWordQuizIdx].some((answer: Answer) => answer.isCorrect)
+    isLastWord() {
+      return this.curWordQuizIdx === this.totalWordQuizCount - 1
     },
-    isFinished() {
-      // console.log("curWordIdx", this.curWordQuizIdx)
-      // console.log("curQuestionIdx", this.curQuestionIdx)
-      return (this.curWordQuizIdx === this.totalWordQuizCount - 1) && (this.curQuestionIdx === this.curTotalQuestionCount - 1)
-    }
   },
   methods: {
     getSelfQuiz() {
@@ -137,50 +146,60 @@ export default defineComponent({
     },
     paginationChange(e: any) {
       this.curQuestionIdx = e.current - 1
+      // 设置未作答
+      this.isTry = false
     },
-    confirmAnswer() {
-      // console.log("answers", this.answers)
+    handleConfirm() {
+      // 设置已作答
+      this.isTry = true
       // 判断正误情况
+      // console.log("answers", this.answers)
       this.curAnswer.isCorrect = Number(this.curAnswer.selectedAnswer) === this.curQuestion.answer
       if (this.curAnswer.isCorrect) {
         uni.showToast({
           title: 'Correct',
           icon: 'success'
         })
+        // 设置未作答
+        this.isTry = false
+        // 判断是否为最后一题
+        const isLastQuestion = this.curQuestionIdx === this.curTotalQuestionCount - 1
+        if (isLastQuestion) {
+          // 判断单词是否通过
+          const isWordPass = this.answers[this.curWordQuizIdx].some((answer: Answer) => answer.isCorrect)
+          if (isWordPass) {
+            const data = {
+              word_id: this.curWordQuiz.word_id
+            }
+            // 发送通过请求
+            setWordQuizPass(data).then((res: any) => {
+              // console.log("passWordQuiz", res)
+            })
+          }
+        } else {
+          // 翻页至下一题
+          this.curQuestionIdx++
+          this.curQuestionIdx = Math.min(this.curQuestionIdx, this.curTotalQuestionCount - 1)
+        }
       } else {
         uni.showToast({
           title: 'Incorrect',
           icon: 'error'
         })
       }
-      // console.log("isCurWordQuizFinished", this.isCurWordQuizFinished)
-      // console.log("isCurWordQuizPass", this.isCurWordQuizPass)
-      // 判断当前单词的完成情况
-      if (this.isCurWordQuizFinished) {
-        // 当前单词测试通过情况
-        if (this.isCurWordQuizPass) {
-          const data = {
-            word_id: this.curWordQuiz.word_id
-          }
-          // 发送通过请求
-          setWordQuizPass(data).then((res: any) => {
-            // console.log("passWordQuiz", res)
-          })
-        }
-      }
-      // 判断完成情况
-      if (this.isFinished) {
-        this.showFinishedModal()
-        return
-      }
-      // 翻页
-      this.curQuestionIdx++
-      if (this.curQuestionIdx === this.curTotalQuestionCount) {
-        this.curWordQuizIdx++
-        this.curQuestionIdx = 0
-      }
     },
-    confirmFinishedModal() {
+    handleNextWord() {
+      // 翻页至下一词
+      this.curWordQuizIdx++
+      this.curWordQuizIdx = Math.min(this.curWordQuizIdx, this.totalWordQuizCount - 1)
+      this.curQuestionIdx = 0
+      // 设置未作答
+      this.isTry = false
+    },
+    handleSubmit() {
+      this.showFinishedModal()
+    },
+    confirmOfSubmitModal() {
       this.closeFinishedModal()
       uni.showToast({
         title: 'Submit successfully',
@@ -188,14 +207,14 @@ export default defineComponent({
       })
       this.goBack()
     },
-    cancelFinishedModal() {
+    cancelOfSubmitModal() {
       this.closeFinishedModal()
     },
     showFinishedModal() {
-      this.isFinishedModalShowed = true
+      this.isSubmitModalShowed = true
     },
     closeFinishedModal() {
-      this.isFinishedModalShowed = false
+      this.isSubmitModalShowed = false
     },
     goBack() {
       uni.navigateBack()
