@@ -2,7 +2,9 @@
   <view class="content">
     <view class="bookCard">
       <!-- 单词表的图片 -->
-      <view class="bookImage"></view>
+      <view>
+        <libIcon :libName="curLibName.split(' ')[0]"/>
+      </view>
       <!-- 单词表的描述 -->
       <view class="bookDetails">
         <view class="bookName">
