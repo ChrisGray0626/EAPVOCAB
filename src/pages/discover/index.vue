@@ -1,17 +1,10 @@
 <template>
   <view class="content">
     <view>
-      <uni-fab
-          ref="fab"
-          horizontal="right"
-          vertical="bottom"
-      />
-    </view>
-    <view>
       <uni-grid :column="4" :showBorder="false" @change="grid1Change">
         <uni-grid-item v-for="item in items1" :key="item.text">
           <view class="grid-item-box">
-            <image :src="item.src" style="width: 100px; height: 100px"/>
+            <image :src="item.src" style="width: 10vh; height: 10vh"/>
             <text>{{ item.text }}</text>
           </view>
         </uni-grid-item>
@@ -21,7 +14,7 @@
       <uni-grid :column="3" :showBorder="false" @change="grid2Change">
         <uni-grid-item v-for="(item, index) in items2" :index="index">
           <view class="grid-item-box">
-            <image :src="item.src" style="width: 100px; height: 100px"/>
+            <image :src="item.src" style="width:  10vh; height:  10vh"/>
             <text>{{ item.text }}</text>
           </view>
         </uni-grid-item>
@@ -51,6 +44,14 @@
     <view class="endMsg">
       <text>一 Done~ 一</text>
     </view>
+  </view>
+  <!--  悬浮按钮-->
+  <view>
+    <uni-fab
+        ref="fab"
+        horizontal="right"
+        vertical="bottom"
+    />
   </view>
   <!-- In-Class Quiz Code 弹窗-->
   <view>
@@ -83,6 +84,7 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {fetchInClassQuiz} from "@/services";
+import {handleAccountExpired} from "@/services/permission";
 
 export default defineComponent({
   data() {
@@ -96,7 +98,7 @@ export default defineComponent({
       items2: [
         {src: '../../static/images/battle.png', width: '100', height: '100', text: 'Word Battle'},
         {src: '../../static/images/quiz.png', width: '100', height: '100', text: 'In-class Quiz'},
-        {src: '../../static/images/game.png', width: '100', height: '100', text: 'Class Activity'}
+        {src: '../../static/images/game.png', width: '100', height: '100', text: 'In-class Activity'}
       ],
       isInClassQuizModalShowed: false,
       inClassQuizCode: ""
@@ -147,6 +149,12 @@ export default defineComponent({
       this.closeInClassQuizModal();
     },
     showInClassQuizModal() {
+      // 检查用户登录状态
+      const token = uni.getStorageSync('token');
+      if (!token) {
+        handleAccountExpired();
+        return;
+      }
       this.isInClassQuizModalShowed = true;
     },
     closeInClassQuizModal() {

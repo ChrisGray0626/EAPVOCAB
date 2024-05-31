@@ -10,20 +10,8 @@ function handleRequestPermission() {
                 const token = res.header['x-token']
                 uni.setStorageSync('token', token)
                 // console.log('set token: ', token)
-            }
-            else if (res.statusCode === 401) {
-                uni.removeStorageSync('token')
-                uni.showModal({
-                    title: 'Warning',
-                    content: 'Account Expired, Please Login',
-                    success: async (res) => {
-                        if (res.confirm) {
-                            await uni.navigateTo({
-                                url: '/pages/login/index'
-                            })
-                        }
-                    }
-                });
+            } else if (res.statusCode === 401) {
+                handleAccountExpired()
                 return false
             }
         },
@@ -49,23 +37,27 @@ function handleRoutePermission() {
                 const url = e.url;
                 let isMatch = isMatchAnyStartWith(url, whiteList)
                 if (!isMatch && !token) {
-                    uni.removeStorageSync('token')
-                    uni.showModal({
-                        title: 'Warning',
-                        content: 'Account Expired, Please Login',
-                        success: async (res) => {
-                            if (res.confirm) {
-                                await uni.navigateTo({
-                                    url: '/pages/login/index'
-                                })
-                            }
-                        }
-                    });
+                    handleAccountExpired()
                     return false
                 }
             },
         })
     })
+}
+
+export function handleAccountExpired() {
+    uni.removeStorageSync('token')
+    uni.showModal({
+        title: 'Warning',
+        content: 'Account Expired, Please Login',
+        success: async (res) => {
+            if (res.confirm) {
+                await uni.navigateTo({
+                    url: '/pages/login/index'
+                })
+            }
+        }
+    });
 }
 
 function isMatchAnyStartWith(s: string, ss: string[]) {
