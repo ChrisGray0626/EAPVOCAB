@@ -1,13 +1,20 @@
 <template>
   <view class="content">
     <view v-if="!isWordListEmpty">
-      <view v-for="(item, index) in words" :key="index" class="myWord">
-        <!-- 单词 -->
-        <text class="words">{{ item.word }}</text>
-        <!-- 单词翻译 -->
-        <text class="wordTrans">{{ item.explanation }}</text>
+      <uni-swipe-action>
+        <!--        <view v-for="item in words" :key="item.id">-->
+        <uni-swipe-action-item v-for="item in words" :key="item.id" :right-options="options1"
+                               @click="handleSwipeActionClick($event, item.id)">
+          <view class="myWord">
+            <!-- 单词 -->
+            <text class="words">{{ item.word }}</text>
+            <!-- 单词翻译 -->
+            <text class="wordTrans">{{ item.explanation }}</text>
+          </view>
+        </uni-swipe-action-item>
         <u-divider/>
-      </view>
+        <!--        </view>-->
+      </uni-swipe-action>
     </view>
     <view v-else class="empty">
       <u-image src="/static/images/empty.png"></u-image>
@@ -34,7 +41,7 @@
         :showCancelButton="true"
         @confirm="confirmAddWordModal"
         @cancel="cancelAddWordModal"
-        width="40vw"
+        width="60vw"
     >
       <u-form>
         <view class='inputBox'>
@@ -46,13 +53,13 @@
             />
           </u-form-item>
         </view>
-        <view class='inputBox'>
-          <text class='inputLabel'>Explanation</text>
-          <uni-easyinput type="textarea"
-                         v-model="addedExplanation"
-                         placeholder="Please input the explanation"
-          />
-        </view>
+        <!--        <view class='inputBox'>-->
+        <!--          <text class='inputLabel'>Explanation</text>-->
+        <!--          <uni-easyinput type="textarea"-->
+        <!--                         v-model="addedExplanation"-->
+        <!--                         placeholder="Please input the explanation"-->
+        <!--          />-->
+        <!--        </view>-->
       </u-form>
     </u-modal>
   </view>
@@ -65,10 +72,10 @@
         :showCancelButton="true"
         @confirm="confirmAddWordFromPassageModal"
         @cancel="cancelAddWordFromPassageModal"
-        width="40vw"
+        width="60vw"
     >
-      <view class='inputBox'>
-        <u-form>
+      <u-form>
+        <view class='inputBox'>
           <text class='inputLabel'>Passage</text>
           <uni-easyinput type="textarea"
                          v-model="passage"
@@ -80,21 +87,34 @@
               <text>Generate</text>
             </u-button>
           </view>
-          <uni-data-checkbox mode="button" multiple v-model="isChecks" :localdata="checkBoxRanges"></uni-data-checkbox>
-        </u-form>
-      </view>
-
+          <uni-data-checkbox mode="button" multiple v-model="isChecks" :localdata="checkBoxRanges" />
+        </view>
+      </u-form>
     </u-modal>
   </view>
 </template>
 <script lang="ts">
 import {defineComponent} from 'vue'
 
-import {fetchVocabularyBank, fetchWordsInSection, addWordItem, fetchWordsFromPassage, addWords} from '@/services'
+import {
+  fetchVocabularyBank,
+  fetchWordsInSection,
+  addWordItem,
+  fetchWordsFromPassage,
+  addWords,
+  deleteWordItem
+} from '@/services'
 
 export default defineComponent({
   data() {
     return {
+      options1: [{
+        text: 'Delete',
+        style: {
+          backgroundColor: '#F56C6C'
+        }
+
+      }],
       voc_lib_id: "",
       voc_sec_id: "",
       words: [] as {
@@ -163,6 +183,34 @@ export default defineComponent({
         this.showAddWordFromPassageModal()
       }
     },
+    // 滑动操作
+    handleSwipeActionClick(event: any, index: string) {
+      const data = {
+        voc_sec_id: this.voc_sec_id,
+        word_id: index,
+      }
+      if (event.index === 0) {
+        uni.showModal({
+          title: "Delete",
+          content: "Are you sure to delete this word?",
+          confirmText: "Confirm",
+          cancelText: "Cancel",
+          success: (res) => {
+            if (res.confirm) {
+              deleteWordItem(data).then((res: any) => {
+                if (res.data.code === 20000) {
+                  uni.showToast({title: "Delete successfully!", icon: "success"})
+                  this.loadWords()
+                } else {
+                  uni.showToast({title: "Failed to delete. Please try again!", icon: "error"})
+                  console.error(res.data.msg)
+                }
+              })
+            }
+          }
+        })
+      }
+    },
     // 添加单词弹窗
     initAddWordModal() {
       this.addedWord = ""
@@ -190,7 +238,7 @@ export default defineComponent({
       addWordItem(data).then((res: any) => {
         if (res.data.code === 20000) {
           this.closeAddWordModal()
-          uni.showToast({title: "Add successfully!", icon: 'success'})
+          uni.showToast({title: "Add successfully!", icon: "success"})
           this.loadWords()
         }
       })
@@ -216,21 +264,22 @@ export default defineComponent({
       this.isAddWordFromPassageShowed = false
     },
     getWordsFromPassage() {
-      // 加载中
+      // 生成单词中
       uni.showLoading({title: "Generating words..."})
       const data = {
         passage: this.passage,
       }
       console.log("data", data)
       fetchWordsFromPassage(data).then((res: any) => {
-        // 加载完成
+        // 生成完成
         uni.hideLoading()
         if (res.data.code === 20000) {
           this.initAddWordFromPassageModal()
           this.candidateWords = res.data.data.words
           this.loadCheckBox()
         } else {
-          uni.showToast({title: "Failed to generate words. Please try again!", icon: 'error'})
+          uni.showToast({title: "Failed to generate words. Please try again!", icon: "error"})
+          console.log(res.data.msg)
         }
       })
     },
@@ -253,7 +302,7 @@ export default defineComponent({
       addWords(data).then((res: any) => {
         if (res.data.code === 20000) {
           this.closeAddWordFromPassageModal()
-          uni.showToast({title: "Add successfully!", icon: 'success'})
+          uni.showToast({title: "Add successfully!", icon: "success"})
           // 刷新单词列表
           this.loadWords()
         }

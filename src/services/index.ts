@@ -48,6 +48,9 @@ export function addWordItem(data: any) {
     })
 }
 
+/**
+ * 添加多个单词
+ */
 export function addWords(data: any) {
     return httpService.post({
         url: baseURL + "upload_words_by_dict",
@@ -55,6 +58,9 @@ export function addWords(data: any) {
     })
 }
 
+/**
+ * 根据段落获取单词
+ */
 export function fetchWordsFromPassage(data: any) {
     return httpService.post({
         url: baseURL + "ai/get_important_words_for_passage",
@@ -62,6 +68,16 @@ export function fetchWordsFromPassage(data: any) {
     })
 }
 
+/**
+ * 删除单个单词
+ */
+export function deleteWordItem(data: any) {
+    return httpService.post({
+        url: baseURL + "delete_one_word",
+        data: data,
+    })
+
+}
 
 /**
  * 获取用户的词库
