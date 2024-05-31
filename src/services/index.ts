@@ -59,6 +59,15 @@ export function addWords(data: any) {
 }
 
 /**
+ * 根据单词获取释义
+ */
+export function fetchExplanationFromWord(data: any) {
+    return httpService.get({
+        url: baseURL + "search_word?key=" + data.word,
+    })
+}
+
+/**
  * 根据段落获取单词
  */
 export function fetchWordsFromPassage(data: any) {

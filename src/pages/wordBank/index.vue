@@ -2,9 +2,11 @@
   <view class="content">
     <view v-if="!isWordListEmpty">
       <uni-swipe-action>
-        <!--        <view v-for="item in words" :key="item.id">-->
-        <uni-swipe-action-item v-for="item in words" :key="item.id" :right-options="options1"
-                               @click="handleSwipeActionClick($event, item.id)">
+        <uni-swipe-action-item
+            v-for="item in words" :key="item.id"
+            :right-options="options1"
+            @click="handleSwipeActionClick($event, item.id)"
+        >
           <view class="myWord">
             <!-- 单词 -->
             <text class="words">{{ item.word }}</text>
@@ -14,7 +16,6 @@
           <view style="border: 0.1px solid gray; margin-top: 4px;"></view>
         </uni-swipe-action-item>
         <u-divider/>
-        <!--        </view>-->
       </uni-swipe-action>
     </view>
     <view v-else class="empty">
@@ -88,7 +89,7 @@
               <text>Generate</text>
             </u-button>
           </view>
-          <uni-data-checkbox mode="button" multiple v-model="isChecks" :localdata="checkBoxRanges" />
+          <uni-data-checkbox mode="button" multiple v-model="isChecks" :localdata="checkBoxRanges"/>
         </view>
       </u-form>
     </u-modal>
@@ -103,7 +104,7 @@ import {
   addWordItem,
   fetchWordsFromPassage,
   addWords,
-  deleteWordItem
+  deleteWordItem, fetchExplanationFromWord
 } from '@/services'
 
 export default defineComponent({
@@ -231,16 +232,37 @@ export default defineComponent({
       this.isAddWordShowed = false
     },
     handleAddWordItem() {
-      const data = {
-        voc_sec_id: this.voc_sec_id,
+      uni.showLoading()
+      // 获取单词释义
+      let data = {
         word: this.addedWord,
-        explanation: this.addedExplanation,
       }
-      addWordItem(data).then((res: any) => {
+      // TODO fetchExplanationFromWord
+      fetchExplanationFromWord(data).then((res: any) => {
+        uni.hideLoading()
         if (res.data.code === 20000) {
-          this.closeAddWordModal()
-          uni.showToast({title: "Add successfully!", icon: "success"})
-          this.loadWords()
+          // 释义处理，一词多义、前缀等
+          this.addedExplanation = res.data.data.match_word.explanation.split(";")[0]
+          this.addedExplanation = this.addedExplanation.replace("1. ", "")
+          // 添加单词
+          let data = {
+            voc_sec_id: this.voc_sec_id,
+            word: this.addedWord,
+            explanation: this.addedExplanation,
+          }
+          addWordItem(data).then((res: any) => {
+            if (res.data.code === 20000) {
+              this.closeAddWordModal()
+              uni.showToast({title: "Add successfully!", icon: "success"})
+              this.loadWords()
+            } else {
+              uni.showToast({title: "Failed to add. Please try again!", icon: "error"})
+              console.error(res.data.msg)
+            }
+          })
+        } else {
+          uni.showToast({title: "Failed to add. Please try again!", icon: "error"})
+          console.error(res.data.msg)
         }
       })
     },
