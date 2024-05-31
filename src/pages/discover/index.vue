@@ -1,25 +1,28 @@
 <template>
   <view class="content">
-    <view>
-      <uni-grid :column="4" :showBorder="false" @change="grid1Change">
-        <uni-grid-item v-for="item in items1" :key="item.text">
-          <view class="grid-item-box">
-            <image :src="item.src" style="width: 10vh; height: 10vh"/>
-            <text>{{ item.text }}</text>
-          </view>
-        </uni-grid-item>
-      </uni-grid>
+    <view class="upper-content">
+      <view>
+        <uni-grid :column="4" :showBorder="false" @change="grid1Change">
+          <uni-grid-item v-for="item in items1" :key="item.text">
+            <view class="grid-item-box">
+              <image :src="item.src" style="width: 3.7em; height: 3.7em" />
+              <text>{{ item.text }}</text>
+            </view>
+          </uni-grid-item>
+        </uni-grid>
+      </view>
+      <view style="margin-top: 10px;">
+        <uni-grid :column="3" :showBorder="false" @change="grid2Change">
+          <uni-grid-item v-for="(item, index) in items2" :index="index">
+            <view class="grid-item-box">
+              <image :src="item.src" style="width:  3.9em; height:  3.9em" />
+              <text>{{ item.text }}</text>
+            </view>
+          </uni-grid-item>
+        </uni-grid>
+      </view>
     </view>
-    <view>
-      <uni-grid :column="3" :showBorder="false" @change="grid2Change">
-        <uni-grid-item v-for="(item, index) in items2" :index="index">
-          <view class="grid-item-box">
-            <image :src="item.src" style="width:  10vh; height:  10vh"/>
-            <text>{{ item.text }}</text>
-          </view>
-        </uni-grid-item>
-      </uni-grid>
-    </view>
+
     <view class="dailyReading" @Click="goToArticleDetail">
       <view class="top">
         <view class="dailyReadyText">
@@ -27,7 +30,7 @@
         </view>
         <view class="readingMore">
           <text class="moreText">More</text>
-          <uni-icons size="20" type="right" color="rgb(209, 209, 209)"/>
+          <uni-icons size="20" type="right" color="rgb(209, 209, 209)" />
         </view>
       </view>
       <!-- 图片 -->
@@ -47,33 +50,19 @@
   </view>
   <!--  悬浮按钮-->
   <view>
-    <uni-fab
-        ref="fab"
-        horizontal="right"
-        vertical="bottom"
-    />
+    <uni-fab ref="fab" horizontal="right" vertical="bottom" />
   </view>
   <!-- In-Class Quiz Code 弹窗-->
   <view>
-    <u-modal
-        :show="isInClassQuizModalShowed"
-        confirmText="Confirm"
-        cancelText="Cancel"
-        :showCancelButton="true"
-        @confirm="confirmInClassQuizModal"
-        @cancel="cancelInClassQuizModal"
-        width="300px"
-    >
+    <u-modal :show="isInClassQuizModalShowed" confirmText="Confirm" cancelText="Cancel" :showCancelButton="true"
+      @confirm="confirmInClassQuizModal" @cancel="cancelInClassQuizModal" width="300px">
       <view class="inClassQuizModal">
         <view class="title">In-class Quiz</view>
         <u-form>
           <view class='inputBox'>
             <view class='inputLabel'>Code</view>
             <u-form-item borderBottom="true">
-              <input
-                  v-model="inClassQuizCode"
-                  placeholder="Please input the code"
-              />
+              <input v-model="inClassQuizCode" placeholder="Please input the code" />
             </u-form-item>
           </view>
         </u-form>
@@ -82,23 +71,23 @@
   </view>
 </template>
 <script lang="ts">
-import {defineComponent} from 'vue'
-import {fetchInClassQuiz} from "@/services";
-import {handleAccountExpired} from "@/services/permission";
+import { defineComponent } from 'vue'
+import { fetchInClassQuiz } from "@/services";
+import { handleAccountExpired } from "@/services/permission";
 
 export default defineComponent({
   data() {
     return {
       items1: [
-        {src: '../../static/images/listen.png', width: '100', height: '100', text: 'Listening'},
-        {src: '../../static/images/speak.png', width: '100', height: '100', text: 'Speaking'},
-        {src: '../../static/images/read.png', width: '100', height: '100', text: 'Reading'},
-        {src: '../../static/images/write.png', width: '100', height: '100', text: 'Writing'}
+        { src: '../../static/images/listen.png', width: '100', height: '100', text: 'Listening' },
+        { src: '../../static/images/speak.png', width: '100', height: '100', text: 'Speaking' },
+        { src: '../../static/images/read.png', width: '100', height: '100', text: 'Reading' },
+        { src: '../../static/images/write.png', width: '100', height: '100', text: 'Writing' }
       ],
       items2: [
-        {src: '../../static/images/battle.png', width: '100', height: '100', text: 'Word Battle'},
-        {src: '../../static/images/quiz.png', width: '100', height: '100', text: 'In-class Quiz'},
-        {src: '../../static/images/game.png', width: '100', height: '100', text: 'In-class Activity'}
+        { src: '../../static/images/battle.png', width: '100', height: '100', text: 'Word Battle' },
+        { src: '../../static/images/quiz.png', width: '100', height: '100', text: 'In-class Quiz' },
+        { src: '../../static/images/game.png', width: '100', height: '100', text: 'In-class Activity' }
       ],
       isInClassQuizModalShowed: false,
       inClassQuizCode: ""

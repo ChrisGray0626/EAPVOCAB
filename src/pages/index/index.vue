@@ -3,7 +3,7 @@
     <view class="studentCard">
       <view class="studentInfo">
         <u-avatar
-            size="100"
+            size="65"
             :src="avatarUrl"
         />
         <view v-if="userInfo.username" class="info">
@@ -16,7 +16,7 @@
         <view class="wordBank" @click="goToWordBank">
           <text>Word Bank</text>
           <view class="rightIcon">
-            <uni-icons color='#696969' size='20' type="right"></uni-icons>
+            <uni-icons color='#696969' size='15' type="right"></uni-icons>
           </view>
         </view>
       </view>

@@ -11,6 +11,7 @@
             <!-- 单词翻译 -->
             <text class="wordTrans">{{ item.explanation }}</text>
           </view>
+          <view style="border: 0.1px solid gray; margin-top: 4px;"></view>
         </uni-swipe-action-item>
         <u-divider/>
         <!--        </view>-->

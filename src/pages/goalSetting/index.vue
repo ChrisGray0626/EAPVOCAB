@@ -33,15 +33,15 @@
 
     <view class="goalPicker">
       <view class="selectedPlan" @click="show">
-        <text>Your Study Plan: {{ selectedDailyWordNum }} words {{selectedDayNum}} days</text>
+        <text>Study Plan: {{ selectedDailyWordNum }} words {{selectedDayNum}} days</text>
       </view>
       <view>
         <picker-view :value="pickerIdx" @change="pickerChange">
           <picker-view-column>
-            <view class="item" v-for="(item, index) in dailyWordNums" :key="index">{{ item }} words</view>
+            <view style="line-height: 35px;" class="item" v-for="(item, index) in dailyWordNums" :key="index">{{ item }} words</view>
           </picker-view-column>
           <picker-view-column>
-            <view class="item" v-for="(item, index) in dayNums" :key="index">{{ item }} days</view>
+            <view style="line-height: 35px;" class="item" v-for="(item, index) in dayNums" :key="index">{{ item }} days</view>
           </picker-view-column>
         </picker-view>
       </view>

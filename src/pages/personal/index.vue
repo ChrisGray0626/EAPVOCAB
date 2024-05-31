@@ -2,10 +2,11 @@
   <view class="content">
     <view class="studentCard">
       <view class="studentInfo">
-        <u-avatar :src="avatarUrl" size="100" class="avatar"/>
+        <u-avatar :src="avatarUrl" size="65" class="avatar"/>
         <view class="info">
-          <view class="username">{{userInfo.username}}</view>
-          <view class="userid">ID: 123456</view>
+          <view class="username" v-if="userInfo.username" >{{userInfo.username}}</view>
+          <view class="username" v-else >Log In</view>
+          <view class="userid" v-if="userInfo.username">ID: 123456</view>
         </view>
         <view class="editMyInfo">
           <uni-icons type="gear" size="40" color="#696969"></uni-icons>
