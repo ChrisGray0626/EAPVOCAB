@@ -1,10 +1,11 @@
-import { createSSRApp } from "vue";
+import {createSSRApp} from "vue";
 import App from "./App.vue";
+import uView from "uview-ui";
 
 export function createApp() {
-  const app = createSSRApp(App);
+    const app = createSSRApp(App);
 
-  return {
-    app,
-  };
+    return {
+        app,
+    };
 }

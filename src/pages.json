@@ -1,30 +1,78 @@
 {
-	"pages": [
-//		{
-//			"path": "pages/index/index"
-//		},
-		{
-			"path": "pages/discover/index"
-		},
-		{
-			"path": "pages/articleDetail/index"
-		},
-		{
-			"path": "pages/goalSetting/index"
-		}
-	],
-	"globalStyle": {
-		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "EAPVOCAB",
-		"usingComponents": {
-		},
-		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
-	},
-	"easycom": {
-		"autoscan": true,
-		"custom": {
-			"^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue"
-		}
-	}
+  "pages": [
+    {
+      "path": "pages/index/index"
+    },
+    {
+      "path": "pages/discover/index"
+    },
+    {
+      "path": "pages/articleDetail/index"
+    },
+    {
+      "path": "pages/goalSetting/index"
+    },
+    {
+      "path": "pages/login/index"
+    },
+    {
+      "path": "pages/moduleChange/index"
+    },
+    {
+      "path": "pages/register/index"
+    },
+    {
+      "path": "pages/personal/index"
+    },
+    {
+      "path": "pages/wordBank/index"
+    },
+    {
+      "path": "pages/selfQuiz/index"
+    },
+        {
+      "path": "pages/inClassQuiz/index"
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "EAPVOCAB",
+    "usingComponents": {
+    },
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8",
+    "animationType": "pop-in"
+  },
+  "tabBar": {
+    "color": "#dbdbdb",
+    "selectedColor": "#2c2c2c",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "Home",
+        "iconPath": "static/tabBar/home.png",
+        "selectedIconPath": "static/tabBar/home_selected.png"
+      },
+      {
+        "pagePath": "pages/discover/index",
+        "text": "Discover",
+        "iconPath": "static/tabBar/discover.png",
+        "selectedIconPath": "static/tabBar/discover_selected.png"
+      },
+      {
+        "pagePath": "pages/personal/index",
+        "text": "Me",
+        "iconPath": "static/tabBar/me.png",
+        "selectedIconPath": "static/tabBar/me_selected.png"
+      }
+    ]
+  },
+  "easycom": {
+    "autoscan": true,
+    "custom": {
+      "^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue",
+      "^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
+    }
+  }
 }
