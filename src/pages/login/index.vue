@@ -54,11 +54,8 @@ export default defineComponent({
           fetchUserInfo().then((res: any) => {
             uni.setStorageSync('userInfo', res.data.data)
             uni.showToast({title: "Login successfully!", icon: 'success'})
-            uni.switchTab({
-              url: "/pages/index/index"
-            })
+            this.gotoIndex()
           })
-          this.gotoIndex()
         } else {
           uni.showToast({title: "Login failed. Please check your email and password!", icon: 'error'})
         }

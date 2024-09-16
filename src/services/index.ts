@@ -145,7 +145,6 @@ export function handleLogin(data: any) {
     return httpService.post({
         url: baseURL + "user/login",
         data: data,
-        timeout: 100000,
     })
 }
 
@@ -153,20 +152,18 @@ export function handleLogin(data: any) {
  * 发送注册请求
  */
 export function handleRegister(data: any) {
-    return httpService.post({ // 这里用request
+    return httpService.post({
         url: baseURL + "user/register",
         data: data,
-        timeout: 100000,
     })
 }
 
 /**
  * 发送注册验证码
  */
-export function sendVerificationCode(data: any) {
-    return  httpService.post({ // 这里用request
+export function sendCaptcha(data: any) {
+    return httpService.post({
         url: baseURL + "user/send_captcha",
         data: data,
-        timeout: 100000,
     })
 }
