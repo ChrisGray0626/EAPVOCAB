@@ -102,8 +102,13 @@ export default defineComponent({
     },
     grid2Change(e: any) {
       const idx = e.detail.index;
+      // Handle in-class quiz
       if (idx === 1) {
         this.showInClassQuizModal();
+      }
+      // Handle in-class activity
+      else if (idx === 2) {
+        this.goToInClassActivity();
       }
     },
     handleInClassQuiz() {
@@ -158,6 +163,10 @@ export default defineComponent({
       uni.navigateTo({
         url: '/pages/articleDetail/index'
       })
+    },
+    goToInClassActivity() {
+      // TODO Go to in-class activity page
+      window.location.href="http://127.0.0.1:8003/game";
     }
   },
 });

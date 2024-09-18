@@ -3,13 +3,14 @@
     <view class="title">
       <text>Sign Up</text>
     </view>
-    <u-form :modelValue='userInfo'>
+    <u-form>
       <view class="inputBox">
         <view class="inputLabel">Nickname</view>
         <u-form-item borderBottom="true">
           <u-input
               placeholder="Please Input Your Nickname"
-              v-model="userInfo.nickname"
+              v-model="nickname"
+              @change="changeNickname"
               border="none"
           />
         </u-form-item>
@@ -19,8 +20,10 @@
         <u-form-item borderBottom="true">
           <u-input
               placeholder="Please Input Your Password"
-              v-model="userInfo.password"
+              v-model="password"
+              @change="changePassword"
               border="none"
+              password
           />
         </u-form-item>
       </view>
@@ -29,8 +32,9 @@
         <u-form-item borderBottom="true">
           <u-input
               placeholder="Please Input Your Email"
-              v-model="userInfo.email"
+              v-model="email"
               border="none"
+              @change="changeEmail"
           />
         </u-form-item>
       </view>
@@ -40,12 +44,15 @@
           <u-form-item borderBottom="true">
             <u-input
                 placeholder="Verification Code"
-                v-model="verificationCode"
+                v-model="captcha"
+                @change="changeCaptcha"
                 border="none"
             />
           </u-form-item>
           <u-button type='primary' class="sendCodeButton" @click.stop="sendCode">
-            {{ isSending ? 'Sending..' : countDown > 0 ? `$Try again in {countDown} seconds` : 'Send Verification Code' }}
+            {{
+              isSending ? 'Sending..' : countDown > 0 ? 'Try again in ' + countDown + ' seconds' : 'Send Verification Code'
+            }}
           </u-button>
         </view>
       </view>
@@ -56,75 +63,83 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 
-import {handleRegister, sendVerificationCode} from "@/services"
+import {handleRegister, sendCaptcha} from "@/services"
 // TODO register 表单校验
 export default defineComponent({
   data() {
     return {
-      userInfo: {} as {
-        nickname: string;
-        email: string;
-        password: string;
-      },
-      verificationCode: '',
+      nickname: '',
+      email: '',
+      password: '',
+      captcha: '',
       isSending: false,
       countDown: 0,
     }
   },
   methods: {
     sendCode() {
+      // 检查邮箱填写情况
+      if (this.email === '') {
+        uni.showToast({
+          title: 'Please input your email',
+          icon: 'error',
+        })
+        return;
+      }
+      // 检查验证码发送情况
       if (this.countDown > 0 || this.isSending) {
         return;
       }
+      // 设置验证码发送状态
       this.isSending = true;
-      const data = {
-        email: this.userInfo.email,
+      // 发送验证码
+      let data = {
+        email: this.email,
       };
-      sendVerificationCode(data).then(res => {
-        if (res.statusCode !== 500) {
-          if (res.data.code == 0) {
-            uni.showToast({
-                title: res.data.msg,
-                icon: 'error',
-              }
-            )
-          } else {
-            uni.showToast({
-              title: "Please check your email",
-              icon: 'error',
-            })
+      sendCaptcha(data).then((res: any) => {
+            if (res.data.code === 20000) {
+              uni.showToast({
+                title: "Please check your email",
+                icon: 'success',
+              })
+            } else {
+              uni.showToast({
+                    title: res.data.msg,
+                    icon: 'error',
+                  }
+              )
+            }
+            // 初始化倒计时
             this.initCountDown();
+            // 设置验证码发送状态
+            this.isSending = false;
           }
-          this.isSending = false;
-        }
-      })
+      )
     },
     signUp() {
       const data = {
-        username: this.userInfo.nickname,
-        email: this.userInfo.email,
-        password: this.userInfo.password,
-        captcha: this.verificationCode,
+        username: this.nickname,
+        email: this.email,
+        password: this.password,
+        captcha: this.captcha,
       };
-      this.goToLogin();
-      handleRegister(data).then(res => {
-        if (res.data.code === 0) {
-          uni.showToast({
-            title: res.data.msg,
-            icon: 'error',
-          })
-        }
+      handleRegister(data).then((res: any) => {
         if (res.data.code === 20000) {
           uni.showToast({
             title: "Registration successful!",
             icon: 'success',
           })
           this.goToLogin();
+        } else {
+          uni.showToast({
+            title: res.data.msg,
+            icon: 'error',
+          })
         }
       })
     },
     goToLogin() {
-      uni.redirectTo({
+      uni.switchTab({
         url: '/pages/login/index'
       })
     },
@@ -137,6 +152,18 @@ export default defineComponent({
           this.isSending = false;
         }
       }, 1000);
+    },
+    changeNickname(value: string) {
+      this.nickname = value
+    },
+    changePassword(value: string) {
+      this.password = value
+    },
+    changeEmail(value: string) {
+      this.email = value
+    },
+    changeCaptcha(value: string) {
+      this.captcha = value
     }
   }
 });
