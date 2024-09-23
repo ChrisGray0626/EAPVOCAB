@@ -71,9 +71,9 @@
   </view>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { fetchInClassQuiz } from "@/services";
-import { handleAccountExpired } from "@/services/permission";
+import {defineComponent} from 'vue'
+import {fetchInClassQuiz} from "@/services";
+import {handleAccountExpired} from "@/services/permission";
 
 export default defineComponent({
   data() {
@@ -102,8 +102,12 @@ export default defineComponent({
     },
     grid2Change(e: any) {
       const idx = e.detail.index;
+      // Handle word battle
+      if (idx === 0) {
+        this.goToWordBattle();
+      }
       // Handle in-class quiz
-      if (idx === 1) {
+      else if (idx === 1) {
         this.showInClassQuizModal();
       }
       // Handle in-class activity
@@ -167,6 +171,10 @@ export default defineComponent({
     goToInClassActivity() {
       // TODO Go to in-class activity page
       window.location.href="http://127.0.0.1:8003/game";
+    },
+    goToWordBattle() {
+      // TODO Go to word battle page
+      window.location.href = "http://127.0.0.1:8004";
     }
   },
 });
