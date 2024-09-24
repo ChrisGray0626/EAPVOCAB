@@ -171,11 +171,11 @@ export default defineComponent({
     },
     goToInClassActivity() {
       // TODO Go to in-class activity page
-      window.location.href="http://127.0.0.1:8003/game";
+      window.location.href = "http://114.55.87.45:8003/game";
     },
     goToWordBattle() {
       // TODO Go to word battle page
-      window.location.href = "http://127.0.0.1:8004";
+      window.location.href = "http://114.55.87.45:8004";
     }
   },
 });
