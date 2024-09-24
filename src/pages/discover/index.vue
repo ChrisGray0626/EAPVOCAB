@@ -1,16 +1,17 @@
 <template>
   <view class="content">
     <view class="upper-content">
-      <view>
-        <uni-grid :column="4" :showBorder="false" @change="grid1Change">
-          <uni-grid-item v-for="item in items1" :key="item.text">
-            <view class="grid-item-box">
-              <image :src="item.src" style="width: 3.7em; height: 3.7em" />
-              <text>{{ item.text }}</text>
-            </view>
-          </uni-grid-item>
-        </uni-grid>
-      </view>
+      <!--      Remove listening, speaking, reading, writing temporarily-->
+      <!--      <view>-->
+      <!--        <uni-grid :column="4" :showBorder="false" @change="grid1Change">-->
+      <!--          <uni-grid-item v-for="item in items1" :key="item.text">-->
+      <!--            <view class="grid-item-box">-->
+      <!--              <image :src="item.src" style="width: 3.7em; height: 3.7em" />-->
+      <!--              <text>{{ item.text }}</text>-->
+      <!--            </view>-->
+      <!--          </uni-grid-item>-->
+      <!--        </uni-grid>-->
+      <!--      </view>-->
       <view style="margin-top: 10px;">
         <uni-grid :column="3" :showBorder="false" @change="grid2Change">
           <uni-grid-item v-for="(item, index) in items2" :index="index">
