@@ -64,7 +64,8 @@
 import {defineComponent} from 'vue'
 
 import {handleRegister, sendCaptcha} from "@/services"
-// TODO register 表单校验
+import {checkEmail, checkFieldIsEmpty} from "@/util/fieldUtil";
+
 export default defineComponent({
   data() {
     return {
@@ -79,11 +80,7 @@ export default defineComponent({
   methods: {
     sendCode() {
       // 检查邮箱填写情况
-      if (this.email === '') {
-        uni.showToast({
-          title: 'Please input your email',
-          icon: 'error',
-        })
+      if (checkFieldIsEmpty(this.email, 'email')) {
         return;
       }
       // 检查验证码发送情况
@@ -117,6 +114,22 @@ export default defineComponent({
       )
     },
     signUp() {
+      // Check nickname
+      if (checkFieldIsEmpty(this.nickname, 'nickname')) {
+        return;
+      }
+      // Check email
+      if (!checkEmail(this.email)) {
+        return;
+      }
+      // Check password
+      if (checkFieldIsEmpty(this.password, 'password')) {
+        return;
+      }
+      // Check captcha
+      if (checkFieldIsEmpty(this.captcha, 'captcha')) {
+        return;
+      }
       const data = {
         username: this.nickname,
         email: this.email,
@@ -139,7 +152,7 @@ export default defineComponent({
       })
     },
     goToLogin() {
-      uni.switchTab({
+      uni.navigateTo({
         url: '/pages/login/index'
       })
     },
