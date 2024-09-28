@@ -1,11 +1,5 @@
 name: Release
-on:
-  push:
-    branches:
-      - dev/chris/*
-  pull_request:
-    branches:
-      - main
+on: release
 
 jobs:
   build:
