@@ -24,7 +24,7 @@ jobs:
           cache: 'yarn'
       - run: yarn install
       - run: yarn run build:h5
-      - name: Zip
+      - name: Zip the dist folder
         run: zip -r ./dist.zip ./dist
       - name: Upload to Release Action
         uses: Shopify/upload-to-release@v2.0.0
