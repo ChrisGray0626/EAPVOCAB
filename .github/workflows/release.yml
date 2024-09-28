@@ -1,5 +1,11 @@
 name: Release
-on: release
+on:
+  push:
+    branches:
+      - dev/chris/*
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
@@ -20,9 +26,7 @@ jobs:
       - run: yarn run build:h5
       - name: Zip the dist folder
         run: zip -r ./dist.zip ./dist
-      - name: Upload to release
-        uses: JasonEtco/upload-to-release@master
+      - name: Release
+        uses: softprops/action-gh-release@v2
         with:
-          args: ./dist.zip application/zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
+          files: ./dist.zip
