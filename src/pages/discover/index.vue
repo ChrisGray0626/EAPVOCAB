@@ -23,31 +23,31 @@
         </uni-grid>
       </view>
     </view>
-
-    <view class="dailyReading" @Click="goToArticleDetail">
-      <view class="top">
-        <view class="dailyReadyText">
-          <text>Daily Reading</text>
-        </view>
-        <view class="readingMore">
-          <text class="moreText">More</text>
-          <uni-icons size="20" type="right" color="rgb(209, 209, 209)" />
-        </view>
-      </view>
-      <!-- 图片 -->
-      <view class="contentImage"></view>
-      <!-- 文章大致内容 -->
-      <view class="mainContent">
-        <text>How Can AI Help Create Flavours?</text>
-      </view>
-      <view class="CNContent">
-        <text>食物味道, AI制造!</text>
-      </view>
-    </view>
-    <!-- 底部信息 -->
-    <view class="endMsg">
-      <text>一 Done~ 一</text>
-    </view>
+<!--    Remove daily Reading temporarily-->
+<!--    <view class="dailyReading" @Click="goToArticleDetail">-->
+<!--      <view class="top">-->
+<!--        <view class="dailyReadyText">-->
+<!--          <text>Daily Reading</text>-->
+<!--        </view>-->
+<!--        <view class="readingMore">-->
+<!--          <text class="moreText">More</text>-->
+<!--          <uni-icons size="20" type="right" color="rgb(209, 209, 209)" />-->
+<!--        </view>-->
+<!--      </view>-->
+<!--      &lt;!&ndash; 图片 &ndash;&gt;-->
+<!--      <view class="contentImage"></view>-->
+<!--      &lt;!&ndash; 文章大致内容 &ndash;&gt;-->
+<!--      <view class="mainContent">-->
+<!--        <text>How Can AI Help Create Flavours?</text>-->
+<!--      </view>-->
+<!--      <view class="CNContent">-->
+<!--        <text>食物味道, AI制造!</text>-->
+<!--      </view>-->
+<!--    </view>-->
+<!--    &lt;!&ndash; 底部信息 &ndash;&gt;-->
+<!--    <view class="endMsg">-->
+<!--      <text>一 Done~ 一</text>-->
+<!--    </view>-->
   </view>
   <!--  悬浮按钮-->
   <view>
