@@ -34,17 +34,26 @@
 import {defineComponent} from 'vue'
 
 import {fetchUserInfo, handleLogin} from "@/services"
+import {checkEmail, checkFieldIsEmpty} from "@/util/fieldUtil";
 
 export default defineComponent({
   data() {
     return {
-      email: '123',
+      email: '',
       password: '',
     };
   },
   computed: {},
   methods: {
     login: async function () {
+      // Check email
+      if (!checkEmail(this.email)) {
+        return;
+      }
+      // Check password
+      if (checkFieldIsEmpty(this.password, 'password')) {
+        return;
+      }
       let data = {
         email: this.email,
         password: this.password

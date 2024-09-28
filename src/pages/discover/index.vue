@@ -1,16 +1,17 @@
 <template>
   <view class="content">
     <view class="upper-content">
-      <view>
-        <uni-grid :column="4" :showBorder="false" @change="grid1Change">
-          <uni-grid-item v-for="item in items1" :key="item.text">
-            <view class="grid-item-box">
-              <image :src="item.src" style="width: 3.7em; height: 3.7em" />
-              <text>{{ item.text }}</text>
-            </view>
-          </uni-grid-item>
-        </uni-grid>
-      </view>
+      <!--      Remove listening, speaking, reading, writing temporarily-->
+      <!--      <view>-->
+      <!--        <uni-grid :column="4" :showBorder="false" @change="grid1Change">-->
+      <!--          <uni-grid-item v-for="item in items1" :key="item.text">-->
+      <!--            <view class="grid-item-box">-->
+      <!--              <image :src="item.src" style="width: 3.7em; height: 3.7em" />-->
+      <!--              <text>{{ item.text }}</text>-->
+      <!--            </view>-->
+      <!--          </uni-grid-item>-->
+      <!--        </uni-grid>-->
+      <!--      </view>-->
       <view style="margin-top: 10px;">
         <uni-grid :column="3" :showBorder="false" @change="grid2Change">
           <uni-grid-item v-for="(item, index) in items2" :index="index">
@@ -22,31 +23,31 @@
         </uni-grid>
       </view>
     </view>
-
-    <view class="dailyReading" @Click="goToArticleDetail">
-      <view class="top">
-        <view class="dailyReadyText">
-          <text>Daily Reading</text>
-        </view>
-        <view class="readingMore">
-          <text class="moreText">More</text>
-          <uni-icons size="20" type="right" color="rgb(209, 209, 209)" />
-        </view>
-      </view>
-      <!-- 图片 -->
-      <view class="contentImage"></view>
-      <!-- 文章大致内容 -->
-      <view class="mainContent">
-        <text>How Can AI Help Create Flavours?</text>
-      </view>
-      <view class="CNContent">
-        <text>食物味道, AI制造!</text>
-      </view>
-    </view>
-    <!-- 底部信息 -->
-    <view class="endMsg">
-      <text>一 Done~ 一</text>
-    </view>
+<!--    Remove daily Reading temporarily-->
+<!--    <view class="dailyReading" @Click="goToArticleDetail">-->
+<!--      <view class="top">-->
+<!--        <view class="dailyReadyText">-->
+<!--          <text>Daily Reading</text>-->
+<!--        </view>-->
+<!--        <view class="readingMore">-->
+<!--          <text class="moreText">More</text>-->
+<!--          <uni-icons size="20" type="right" color="rgb(209, 209, 209)" />-->
+<!--        </view>-->
+<!--      </view>-->
+<!--      &lt;!&ndash; 图片 &ndash;&gt;-->
+<!--      <view class="contentImage"></view>-->
+<!--      &lt;!&ndash; 文章大致内容 &ndash;&gt;-->
+<!--      <view class="mainContent">-->
+<!--        <text>How Can AI Help Create Flavours?</text>-->
+<!--      </view>-->
+<!--      <view class="CNContent">-->
+<!--        <text>食物味道, AI制造!</text>-->
+<!--      </view>-->
+<!--    </view>-->
+<!--    &lt;!&ndash; 底部信息 &ndash;&gt;-->
+<!--    <view class="endMsg">-->
+<!--      <text>一 Done~ 一</text>-->
+<!--    </view>-->
   </view>
   <!--  悬浮按钮-->
   <view>
@@ -71,9 +72,9 @@
   </view>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { fetchInClassQuiz } from "@/services";
-import { handleAccountExpired } from "@/services/permission";
+import {defineComponent} from 'vue'
+import {fetchInClassQuiz} from "@/services";
+import {handleAccountExpired} from "@/services/permission";
 
 export default defineComponent({
   data() {
@@ -102,8 +103,12 @@ export default defineComponent({
     },
     grid2Change(e: any) {
       const idx = e.detail.index;
+      // Handle word battle
+      if (idx === 0) {
+        this.goToWordBattle();
+      }
       // Handle in-class quiz
-      if (idx === 1) {
+      else if (idx === 1) {
         this.showInClassQuizModal();
       }
       // Handle in-class activity
@@ -166,7 +171,11 @@ export default defineComponent({
     },
     goToInClassActivity() {
       // TODO Go to in-class activity page
-      window.location.href="http://127.0.0.1:8003/game";
+      window.location.href = "http://114.55.87.45:8003/game";
+    },
+    goToWordBattle() {
+      // TODO Go to word battle page
+      window.location.href = "http://114.55.87.45:8004";
     }
   },
 });
