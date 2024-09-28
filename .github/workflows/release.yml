@@ -1,4 +1,4 @@
-name: Publish Release
+name: Release
 on:
   push:
     branches:
@@ -24,11 +24,3 @@ jobs:
           cache: 'yarn'
       - run: yarn install
       - run: yarn run build:h5
-      - name: Zip
-        run: zip -r ./dist.zip ./dist
-      - name: Upload to Release Action
-        uses: Shopify/upload-to-release@v2.0.0
-        with:
-          name: latest
-          path: ./dist.zip
-          repo-token: ${{ secrets.REPO_TOKEN }}
