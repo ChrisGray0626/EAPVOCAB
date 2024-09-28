@@ -2,7 +2,7 @@ name: Release
 on:
   push:
     branches:
-      - dev/*
+      - dev/chris/*
   pull_request:
     branches:
       - main
@@ -14,8 +14,6 @@ jobs:
     strategy:
       matrix:
         node-version: [ 18.x ]
-        image-name: [ chrisgray0626/gis-agent-frontend ]
-        image-tag: [ 0.2 ]
 
     steps:
       - name: Checkout
@@ -25,4 +23,12 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'yarn'
       - run: yarn install
-      - run: yarn build
+      - run: yarn run build:h5
+      - name: Zip the dist folder
+        run: zip -r ./dist.zip ./dist
+      - name: Upload to Release Action
+        uses: Shopify/upload-to-release@v2.0.0
+        with:
+          name: latest
+          path: ./dist.zip
+          repo-token: ${{ secrets.REPO_TOKEN }}
