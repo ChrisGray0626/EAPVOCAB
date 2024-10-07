@@ -25,7 +25,7 @@
         <u-divider/>
       </view>
 
-      <view class="englishContent">
+      <view class="englishContent" v-if="userInfo.cur_lib_name">
         <view class="bookInfo">
           <view class="bookName">
             <text>{{ userInfo.cur_lib_name }}</text>
@@ -81,7 +81,7 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 
-import {fetchUserInfo} from "@/services";
+import {fetchUserInfo, fetchUserVocLibItem} from "@/services";
 
 export default defineComponent({
   data() {
@@ -95,32 +95,49 @@ export default defineComponent({
       },
       avatarUrl: "../../static/images/boy_avatar.png",
       curLibName: "",
-      remainWords: 3272,
-      studiedWords: 666,
-      remainDayNum: 100,
+      studiedWords: -1,
+      totalWords: -1,
+      studyPlan: -1,
     };
   },
   onShow() {
+    const token = uni.getStorageSync('token')
+    if (token === '') {
+      return
+    }
     this.getUserInfo()
+    this.getCurLib()
     // console.log("onShow", this.userInfo)
   },
   computed: {
     emailUsername(): string {
       return this.userInfo.email ? this.userInfo.email.split('@')[0] : '';
     },
+    remainWords(): number {
+      return this.totalWords - this.studiedWords
+    },
     studiedPercentage(): number {
       return this.studiedWords / this.remainWords * 100
+    },
+    remainDayNum(): number {
+      return Math.ceil(this.remainWords / this.studyPlan)
     }
   },
   methods: {
     getUserInfo() {
-      const token = uni.getStorageSync('token')
-      if (token != '') {
         fetchUserInfo().then((res: any) => {
           this.userInfo = res.data.data
           uni.setStorageSync('userInfo', this.userInfo)
         })
+    },
+    getCurLib() {
+      const data = {
+        lib_id: this.userInfo.cur_lib
       }
+      fetchUserVocLibItem(data).then((res: any) => {
+        this.totalWords = res.data.data.total_word_count;
+        this.studiedWords = res.data.data.progress;
+      })
     },
     goToLogin() {
       uni.navigateTo({

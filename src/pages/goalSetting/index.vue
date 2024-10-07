@@ -54,15 +54,15 @@
 </template>
 <script lang="ts">
 import {defineComponent} from 'vue'
-import {fetchUserInfo} from "@/services";
+import {fetchUserVocLibItem, setVocLibStudyPlan} from "@/services";
 
 export default defineComponent({
   data() {
     return {
-      curLibName: "",
       isShow: true,
-      remainWords: 3272,
-      studiedWords: 666,
+      totalWords: -1,
+      remainWords: -1,
+      studiedWords: -1,
       alternativePlans: [] as string[][],
       selectedPlan: "",
       dailyWordNums: [] as Number[],
@@ -77,6 +77,15 @@ export default defineComponent({
     this.getCurLib()
   },
   computed: {
+    userInfo() {
+      return uni.getStorageSync('userInfo')
+    },
+    curLibId(): string {
+      return this.userInfo.cur_lib
+    },
+    curLibName(): string {
+      return this.userInfo.cur_lib_name
+    },
     studiedPercentage(): number {
       return this.studiedWords / this.remainWords * 100
     },
@@ -108,13 +117,13 @@ export default defineComponent({
       this.selectedPlan = this.alternativePlans[0][0]
     },
     getCurLib() {
-      const token = uni.getStorageSync('token')
-      if (token != '') {
-        fetchUserInfo().then((res: any) => {
-          const userInfo = res.data.data
-          this.curLibName = userInfo.cur_lib_name
-        })
+      const data = {
+        lib_id: this.userInfo.cur_lib
       }
+      fetchUserVocLibItem(data).then((res: any) => {
+        this.totalWords = res.data.data.total_word_count;
+        this.studiedWords = res.data.data.progress;
+      })
     },
     pickerChange(e: any) {
       // console.log(e)
@@ -141,8 +150,14 @@ export default defineComponent({
     },
     savePlan() {
       // TODO Save Plan
-      uni.showToast({title: "Save successfully!", icon: 'success'})
-      this.goBack();
+      const data = {
+        voc_lib_id: this.curLibId,
+        new_word_per_day: this.selectedDailyWordNum,
+      }
+      setVocLibStudyPlan(data).then((res: any) => {
+        uni.showToast({title: "Save successfully!", icon: 'success'})
+        this.goBack();
+      })
     },
     goBack() {
       uni.navigateBack()

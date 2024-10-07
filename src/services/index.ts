@@ -12,9 +12,34 @@ export function fetchUserInfo() {
     })
 }
 
+/**
+ * 设置用户当前词汇库
+ * @param data
+ */
 export function setCurrentVocLib(data: any) {
     return httpService.post({
         url: baseURL + "user/set_cur_lib",
+        data: data,
+    })
+}
+
+/**
+ * 获取词汇库学习计划
+ */
+// TODO fetchVocLibStudyPlan
+export function fetchVocLibStudyPlan(data: any) {
+    return httpService.get({
+        url: baseURL + "vocabulary/",
+    })
+}
+
+/**
+ * 设置词汇库学习计划
+ */
+// TODO setVocLibStudyPlan
+export function setVocLibStudyPlan(data: any) {
+    return httpService.post({
+        url: baseURL + "vocabulary/update_word_per_day",
         data: data,
     })
 }
@@ -89,11 +114,20 @@ export function deleteWordItem(data: any) {
 }
 
 /**
- * 获取用户的词库
+ * 获取用户的所有词库
  */
 export function fetchUserVocLibs() {
     return httpService.get({
         url: baseURL + "get_vocabulary_lib",
+    })
+}
+
+/**
+ * 获取指定词库
+ */
+export function fetchUserVocLibItem(data: any) {
+    return httpService.get({
+        url: baseURL + "get_vocabulary_lib?lib_id=" + data.lib_id,
     })
 }
 

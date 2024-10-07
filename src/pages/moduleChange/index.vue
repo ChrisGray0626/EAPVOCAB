@@ -40,6 +40,7 @@
 <script lang="ts">
 import {defineComponent} from "vue";
 import {fetchUserVocLibs, fetchVocSection, setCurrentVocLib} from "@/services";
+
 export default defineComponent({
   data() {
     return {
@@ -74,10 +75,14 @@ export default defineComponent({
             });
           });
         }
+        console.log("vocLibs: ", this.vocLibs);
       });
     },
     collapseChange(e: any) {
-      this.curLibIdx = e;
+      // TODO e is not the index of the lib
+      if (e != '') {
+        this.curLibIdx = e;
+      }
       this.showSetCurModuleModal();
     },
     confirmSetCurModuleModal() {
