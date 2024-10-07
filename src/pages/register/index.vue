@@ -8,7 +8,7 @@
         <view class="inputLabel">Nickname</view>
         <u-form-item borderBottom="true">
           <u-input
-              placeholder="Please Input Your Nickname"
+              placeholder="Please input your nickname"
               v-model="nickname"
               @change="changeNickname"
               border="none"
@@ -19,7 +19,7 @@
         <view class="inputLabel">Password</view>
         <u-form-item borderBottom="true">
           <u-input
-              placeholder="Please Input Your Password"
+              placeholder="Please input your password"
               v-model="password"
               @change="changePassword"
               border="none"
@@ -28,10 +28,21 @@
         </u-form-item>
       </view>
       <view class="inputBox">
+        <view class="inputLabel">Module</view>
+        <u-form-item borderBottom="true">
+          <u-input
+              placeholder="Please input your module"
+              v-model="module"
+              @change="changeModule"
+              border="none"
+          />
+        </u-form-item>
+      </view>
+      <view class="inputBox">
         <view class="inputLabel">XJTLU Email</view>
         <u-form-item borderBottom="true">
           <u-input
-              placeholder="Please Input Your Email"
+              placeholder="Please input your email"
               v-model="email"
               border="none"
               @change="changeEmail"
@@ -56,6 +67,11 @@
           </u-button>
         </view>
       </view>
+      <view class="userAgreementBox">
+        <text>By continuing, you agree to our</text>
+        <text class="userAgreementText" @click="goToUserAgreement">user agreement</text>
+        <text>.</text>
+      </view>
       <u-button type='primary' @click="signUp">Submit</u-button>
     </u-form>
   </view>
@@ -70,8 +86,9 @@ export default defineComponent({
   data() {
     return {
       nickname: '',
-      email: '',
       password: '',
+      module: '',
+      email: '',
       captcha: '',
       isSending: false,
       countDown: 0,
@@ -118,12 +135,16 @@ export default defineComponent({
       if (checkFieldIsEmpty(this.nickname, 'nickname')) {
         return;
       }
-      // Check email
-      if (!checkEmail(this.email)) {
-        return;
-      }
       // Check password
       if (checkFieldIsEmpty(this.password, 'password')) {
+        return;
+      }
+      // Check module
+      if (checkFieldIsEmpty(this.module, 'module')) {
+        return;
+      }
+      // Check email
+      if (!checkEmail(this.email)) {
         return;
       }
       // Check captcha
@@ -132,8 +153,9 @@ export default defineComponent({
       }
       const data = {
         username: this.nickname,
-        email: this.email,
         password: this.password,
+        module: this.module,
+        email: this.email,
         captcha: this.captcha,
       };
       handleRegister(data).then((res: any) => {
@@ -149,6 +171,11 @@ export default defineComponent({
             icon: 'error',
           })
         }
+      })
+    },
+    goToUserAgreement() {
+      uni.navigateTo({
+        url: '/pages/userAgreement/index'
       })
     },
     goToLogin() {
@@ -171,6 +198,9 @@ export default defineComponent({
     },
     changePassword(value: string) {
       this.password = value
+    },
+    changeModule(value: string) {
+      this.module = value
     },
     changeEmail(value: string) {
       this.email = value

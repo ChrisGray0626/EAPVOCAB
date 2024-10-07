@@ -5,8 +5,8 @@
         <u-avatar :src="avatarUrl" size="65" class="avatar"/>
         <view class="info">
           <view class="username" v-if="userInfo.username" >{{userInfo.username}}</view>
-          <view class="username" v-else >Log In</view>
-          <view class="userid" v-if="userInfo.username">ID: 123456</view>
+          <view class="username" v-else @click="goToLogin">Log In</view>
+          <view class="userid" v-if="userInfo.username">ID: {{ emailUsername }}</view>
         </view>
         <view class="editMyInfo">
           <uni-icons type="gear" size="40" color="#696969"></uni-icons>
@@ -49,7 +49,7 @@ export default defineComponent({
   data() {
     return {
       userInfo: {} as { username: string; email: string },
-      avatarUrl: '',
+      avatarUrl: "../../static/images/boy_avatar.png",
       functions: [
         {
           title: 'Learning Calendar',
@@ -73,6 +73,18 @@ export default defineComponent({
   onShow() {
     this.userInfo = uni.getStorageSync('userInfo') || {};
   },
+  computed: {
+    emailUsername(): string {
+      return this.userInfo.email ? this.userInfo.email.split('@')[0] : '';
+    },
+  },
+  methods: {
+    goToLogin() {
+      uni.navigateTo({
+        url: '/pages/login/index'
+      })
+    },
+  }
 })
 </script>
 <style lang="less" scoped>

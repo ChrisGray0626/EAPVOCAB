@@ -14,6 +14,13 @@ function handleRequestPermission() {
                 handleAccountExpired()
                 return false
             }
+            // Handle other exceptions
+            else {
+                uni.showToast({
+                    title: res.data.message,
+                    icon: 'error',
+                })
+            }
         },
     })
 }
@@ -24,6 +31,7 @@ const whiteList = [
     '/pages/index/index',
     '/pages/discover/index',
     '/pages/personal/index',
+    '/pages/userAgreement/index',
 ]
 
 const routeTypes = ["navigateTo", "redirectTo"]
