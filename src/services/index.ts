@@ -26,20 +26,18 @@ export function setCurrentVocLib(data: any) {
 /**
  * 获取词汇库学习计划
  */
-// TODO fetchVocLibStudyPlan
 export function fetchVocLibStudyPlan(data: any) {
     return httpService.get({
-        url: baseURL + "vocabulary/",
+        url: baseURL + "get_word_per_day?voc_lib_id=data.voc_lib_id",
     })
 }
 
 /**
  * 设置词汇库学习计划
  */
-// TODO setVocLibStudyPlan
 export function setVocLibStudyPlan(data: any) {
     return httpService.post({
-        url: baseURL + "vocabulary/update_word_per_day",
+        url: baseURL + "vocabulary/update_word_per_day?voc_lib_id=" + data.voc_lib_id + "&new_word_per_day=" + data.new_word_per_day,
         data: data,
     })
 }
@@ -122,14 +120,6 @@ export function fetchUserVocLibs() {
     })
 }
 
-/**
- * 获取指定词库
- */
-export function fetchUserVocLibItem(data: any) {
-    return httpService.get({
-        url: baseURL + "get_vocabulary_lib?lib_id=" + data.lib_id,
-    })
-}
 
 /**
  * 获取词库的单元

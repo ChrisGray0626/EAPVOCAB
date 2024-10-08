@@ -54,7 +54,7 @@
 </template>
 <script lang="ts">
 import {defineComponent} from 'vue'
-import {fetchUserVocLibItem, setVocLibStudyPlan} from "@/services";
+import {fetchVocLibStudyPlan, setVocLibStudyPlan} from "@/services";
 
 export default defineComponent({
   data() {
@@ -74,7 +74,7 @@ export default defineComponent({
     this.initAlternativePlans()
   },
   onShow() {
-    this.getCurLib()
+    this.getCurLibInfo()
   },
   computed: {
     userInfo() {
@@ -116,13 +116,12 @@ export default defineComponent({
       this.alternativePlans.push(ll)
       this.selectedPlan = this.alternativePlans[0][0]
     },
-    getCurLib() {
+    getCurLibInfo() {
       const data = {
-        lib_id: this.userInfo.cur_lib
+        voc_lib_id: this.userInfo.cur_lib
       }
-      fetchUserVocLibItem(data).then((res: any) => {
-        this.totalWords = res.data.data.total_word_count;
-        this.studiedWords = res.data.data.progress;
+      fetchVocLibStudyPlan(data).then((res: any) => {
+        // TODO fetchVocLibStudyPlan
       })
     },
     pickerChange(e: any) {
@@ -155,8 +154,10 @@ export default defineComponent({
         new_word_per_day: this.selectedDailyWordNum,
       }
       setVocLibStudyPlan(data).then((res: any) => {
-        uni.showToast({title: "Save successfully!", icon: 'success'})
-        this.goBack();
+        if (res.data.code === 20000) {
+          uni.showToast({title: "Save successfully!", icon: 'success'})
+          this.goBack();
+        }
       })
     },
     goBack() {

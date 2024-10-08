@@ -81,7 +81,7 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 
-import {fetchUserInfo, fetchUserVocLibItem} from "@/services";
+import {fetchUserInfo, fetchVocLibStudyPlan} from "@/services";
 
 export default defineComponent({
   data() {
@@ -106,8 +106,7 @@ export default defineComponent({
       return
     }
     this.getUserInfo()
-    this.getCurLib()
-    // console.log("onShow", this.userInfo)
+    this.getCurLibInfo()
   },
   computed: {
     emailUsername(): string {
@@ -130,14 +129,14 @@ export default defineComponent({
           uni.setStorageSync('userInfo', this.userInfo)
         })
     },
-    getCurLib() {
+    getCurLibInfo() {
       const data = {
-        lib_id: this.userInfo.cur_lib
+        voc_lib_id: this.userInfo.cur_lib
       }
-      fetchUserVocLibItem(data).then((res: any) => {
-        this.totalWords = res.data.data.total_word_count;
-        this.studiedWords = res.data.data.progress;
+      fetchVocLibStudyPlan(data).then((res: any) => {
+        // TODO fetchVocLibStudyPlan
       })
+
     },
     goToLogin() {
       uni.navigateTo({
