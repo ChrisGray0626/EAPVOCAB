@@ -13,16 +13,15 @@
             <view class="changeModule">
               <text>Change Module</text>
               <uni-icons color="#C0C0C0" size="18" style="margin-left: 5px;" type="refreshempty"/>
-
             </view>
           </navigator>
         </view>
         <view class="schedule">
-          <text>{{ studiedWords }} / {{ remainWords }}</text>
+          <text>{{ learnedWordNum }} / {{ totalWordNum }}</text>
         </view>
         <view class="progress">
           <u-line-progress
-              :percentage="studiedPercentage"
+              :percentage="learnedPercentage"
               :showText="false"
               activeColor="#78A4F4"
           />
@@ -33,7 +32,7 @@
 
     <view class="goalPicker">
       <view class="selectedPlan" @click="show">
-        <text>Study Plan: {{ selectedDailyWordNum }} words {{selectedDayNum}} days</text>
+        <text>Learning Plan: {{ selectedDailyWordNum }} words {{ selectedDayNum }} days</text>
       </view>
       <view>
         <picker-view :value="pickerIdx" @change="pickerChange">
@@ -54,15 +53,15 @@
 </template>
 <script lang="ts">
 import {defineComponent} from 'vue'
-import {fetchVocLibStudyPlan, setVocLibStudyPlan} from "@/services";
+import {fetchVocLibLearningPlan, setVocLibLearningPlan} from "@/services";
 
 export default defineComponent({
   data() {
     return {
       isShow: true,
-      totalWords: -1,
-      remainWords: -1,
-      studiedWords: -1,
+      totalWordNum: -1,
+      learnedWordNum: -1,
+      dailyWordNum: -1,
       alternativePlans: [] as string[][],
       selectedPlan: "",
       dailyWordNums: [] as Number[],
@@ -71,23 +70,23 @@ export default defineComponent({
     }
   },
   created() {
-    this.initAlternativePlans()
   },
-  onShow() {
-    this.getCurLibInfo()
+  async onShow() {
+    await this.getCurLibInfo();
+    this.initAlternativePlans()
   },
   computed: {
     userInfo() {
       return uni.getStorageSync('userInfo')
     },
-    curLibId(): string {
-      return this.userInfo.cur_lib
-    },
     curLibName(): string {
       return this.userInfo.cur_lib_name
     },
-    studiedPercentage(): number {
-      return this.studiedWords / this.remainWords * 100
+    remainingWordNum(): number {
+      return this.totalWordNum - this.learnedWordNum
+    },
+    learnedPercentage(): number {
+      return this.learnedWordNum / this.remainingWordNum * 100
     },
     selectedDailyWordNum() {
       return this.dailyWordNums[this.pickerIdx[0]]
@@ -95,17 +94,15 @@ export default defineComponent({
     selectedDayNum() {
       return this.dayNums[this.pickerIdx[1]]
     },
-    pickerValue() {
-      return [this.pickerIdx, this.pickerIdx]
-    }
   },
 
   methods: {
     initAlternativePlans() {
+      // Init alternative plans
       let ll = []
-      for (let i = 1; i <= this.remainWords / 5; i++) {
+      for (let i = 1; i <= this.remainingWordNum / 5; i++) {
         const dailyWordNum = i * 5
-        const dayNum = Math.ceil(this.remainWords / dailyWordNum)
+        const dayNum = Math.ceil(this.remainingWordNum / dailyWordNum)
         if (this.dayNums.slice(-1)[0] === dayNum) {
           continue
         }
@@ -115,14 +112,18 @@ export default defineComponent({
       }
       this.alternativePlans.push(ll)
       this.selectedPlan = this.alternativePlans[0][0]
+      // Init picker index
+      const tmp = this.dailyWordNum / 5 - 1
+      this.pickerIdx = [tmp, tmp]
     },
-    getCurLibInfo() {
+    async getCurLibInfo() {
       const data = {
         voc_lib_id: this.userInfo.cur_lib
       }
-      fetchVocLibStudyPlan(data).then((res: any) => {
-        // TODO fetchVocLibStudyPlan
-      })
+      const res = await fetchVocLibLearningPlan(data) as any;
+      this.dailyWordNum = res.data.data.word_per_day;
+      this.learnedWordNum = res.data.data.learned_words;
+      this.totalWordNum = res.data.data.total_words;
     },
     pickerChange(e: any) {
       // console.log(e)
@@ -147,18 +148,14 @@ export default defineComponent({
     show() {
       this.isShow = true
     },
-    savePlan() {
-      // TODO Save Plan
+    async savePlan() {
       const data = {
-        voc_lib_id: this.curLibId,
+        voc_lib_id: this.userInfo.cur_lib,
         new_word_per_day: this.selectedDailyWordNum,
       }
-      setVocLibStudyPlan(data).then((res: any) => {
-        if (res.data.code === 20000) {
-          uni.showToast({title: "Save successfully!", icon: 'success'})
-          this.goBack();
-        }
-      })
+      await setVocLibLearningPlan(data);
+      uni.showToast({title: "Save successfully!", icon: 'success'})
+      this.goBack();
     },
     goBack() {
       uni.navigateBack()

@@ -26,18 +26,19 @@ export function setCurrentVocLib(data: any) {
 /**
  * 获取词汇库学习计划
  */
-export function fetchVocLibStudyPlan(data: any) {
-    return httpService.get({
-        url: baseURL + "get_word_per_day?voc_lib_id=data.voc_lib_id",
+export function fetchVocLibLearningPlan(data: any) {
+    return httpService.post({
+        url: baseURL + "get_word_per_day",
+        data: data,
     })
 }
 
 /**
  * 设置词汇库学习计划
  */
-export function setVocLibStudyPlan(data: any) {
+export function setVocLibLearningPlan(data: any) {
     return httpService.post({
-        url: baseURL + "vocabulary/update_word_per_day?voc_lib_id=" + data.voc_lib_id + "&new_word_per_day=" + data.new_word_per_day,
+        url: baseURL + "update_word_per_day",
         data: data,
     })
 }

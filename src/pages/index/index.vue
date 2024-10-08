@@ -37,17 +37,17 @@
         </view>
         <view class="progress">
           <u-line-progress
-              :percentage="studiedPercentage"
+              :percentage="learnedPercentage"
               :showText="false"
               activeColor="#78A4F4"
           />
         </view>
         <view class="schedule">
           <view>
-            <text>{{ studiedWords }} / {{ remainWords }}</text>
+            <text>{{ learnedWordNum }} / {{ remainingWordNum }}</text>
           </view>
           <view class="remainDays">
-            <text>{{ remainDayNum }} days remaining</text>
+            <text>{{ remainingDayNum }} days remaining</text>
           </view>
         </view>
       </view>
@@ -81,7 +81,7 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 
-import {fetchUserInfo, fetchVocLibStudyPlan} from "@/services";
+import {fetchUserInfo, fetchVocLibLearningPlan} from "@/services";
 
 export default defineComponent({
   data() {
@@ -95,48 +95,47 @@ export default defineComponent({
       },
       avatarUrl: "../../static/images/boy_avatar.png",
       curLibName: "",
-      studiedWords: -1,
-      totalWords: -1,
-      studyPlan: -1,
+      learnedWordNum: -1,
+      totalWordNum: -1,
+      dailyWordNum: -1,
     };
   },
-  onShow() {
+  async onShow() {
     const token = uni.getStorageSync('token')
     if (token === '') {
       return
     }
-    this.getUserInfo()
+    await this.getUserInfo()
     this.getCurLibInfo()
   },
   computed: {
     emailUsername(): string {
       return this.userInfo.email ? this.userInfo.email.split('@')[0] : '';
     },
-    remainWords(): number {
-      return this.totalWords - this.studiedWords
+    remainingWordNum(): number {
+      return this.totalWordNum - this.learnedWordNum
     },
-    studiedPercentage(): number {
-      return this.studiedWords / this.remainWords * 100
+    learnedPercentage(): number {
+      return this.learnedWordNum / this.remainingWordNum * 100
     },
-    remainDayNum(): number {
-      return Math.ceil(this.remainWords / this.studyPlan)
+    remainingDayNum(): number {
+      return Math.ceil(this.remainingWordNum / this.dailyWordNum)
     }
   },
   methods: {
-    getUserInfo() {
-        fetchUserInfo().then((res: any) => {
-          this.userInfo = res.data.data
-          uni.setStorageSync('userInfo', this.userInfo)
-        })
+    async getUserInfo() {
+      const res = await fetchUserInfo() as any;
+      this.userInfo = res.data.data
+      uni.setStorageSync('userInfo', this.userInfo)
     },
-    getCurLibInfo() {
+    async getCurLibInfo() {
       const data = {
-        voc_lib_id: this.userInfo.cur_lib
+        voc_lib_id: uni.getStorageSync('userInfo').cur_lib
       }
-      fetchVocLibStudyPlan(data).then((res: any) => {
-        // TODO fetchVocLibStudyPlan
-      })
-
+      const res = await fetchVocLibLearningPlan(data) as any;
+      this.dailyWordNum = res.data.data.word_per_day;
+      this.learnedWordNum = res.data.data.learned_words;
+      this.totalWordNum = res.data.data.total_words;
     },
     goToLogin() {
       uni.navigateTo({

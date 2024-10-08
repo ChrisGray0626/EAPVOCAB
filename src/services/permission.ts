@@ -17,7 +17,7 @@ function handleRequestPermission() {
             // Handle other exceptions
             else {
                 uni.showToast({
-                    title: res.data.message,
+                    title: res.data.msg,
                     icon: 'error',
                 })
             }
