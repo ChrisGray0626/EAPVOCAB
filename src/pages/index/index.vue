@@ -52,23 +52,24 @@
         </view>
       </view>
     </view>
-    <view class="todayGoal">
-      <text class="goalText">- Today's Goal -</text>
-      <view class="goalContent">
-        <view class="newWords">
-          <text>15</text>
-          <text>New</text>
-        </view>
-        <view class="newWords">
-          <text>10</text>
-          <text>Review</text>
-        </view>
-        <view class="newWords">
-          <text>25</text>
-          <text>Total</text>
-        </view>
-      </view>
-    </view>
+    <!--    Remove today goal-->
+    <!--    <view class="todayGoal">-->
+    <!--      <text class="goalText">- Today's Goal -</text>-->
+    <!--      <view class="goalContent">-->
+    <!--        <view class="newWords">-->
+    <!--          <text>15</text>-->
+    <!--          <text>New</text>-->
+    <!--        </view>-->
+    <!--        <view class="newWords">-->
+    <!--          <text>10</text>-->
+    <!--          <text>Review</text>-->
+    <!--        </view>-->
+    <!--        <view class="newWords">-->
+    <!--          <text>25</text>-->
+    <!--          <text>Total</text>-->
+    <!--        </view>-->
+    <!--      </view>-->
+    <!--    </view>-->
     <view class='startWords'>
       <u-button shape="circle" type='primary' @click.stop="goToWordTest">
         <text>Start self-test quiz!</text>
@@ -96,7 +97,7 @@ export default defineComponent({
       avatarUrl: "../../static/images/boy_avatar.png",
       curLibName: "",
       learnedWordNum: -1,
-      totalWordNum: -1,
+      wordTotalNum: -1,
       dailyWordNum: -1,
     };
   },
@@ -113,7 +114,7 @@ export default defineComponent({
       return this.userInfo.email ? this.userInfo.email.split('@')[0] : '';
     },
     remainingWordNum(): number {
-      return this.totalWordNum - this.learnedWordNum
+      return this.wordTotalNum - this.learnedWordNum
     },
     learnedPercentage(): number {
       return this.learnedWordNum / this.remainingWordNum * 100
@@ -135,7 +136,7 @@ export default defineComponent({
       const res = await fetchVocLibLearningPlan(data) as any;
       this.dailyWordNum = res.data.data.word_per_day;
       this.learnedWordNum = res.data.data.learned_words;
-      this.totalWordNum = res.data.data.total_words;
+      this.wordTotalNum = res.data.data.total_words;
     },
     goToLogin() {
       uni.navigateTo({

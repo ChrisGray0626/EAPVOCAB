@@ -17,7 +17,7 @@
           </navigator>
         </view>
         <view class="schedule">
-          <text>{{ learnedWordNum }} / {{ totalWordNum }}</text>
+          <text>{{ learnedWordNum }} / {{ wordTotalNum }}</text>
         </view>
         <view class="progress">
           <u-line-progress
@@ -59,7 +59,7 @@ export default defineComponent({
   data() {
     return {
       isShow: true,
-      totalWordNum: -1,
+      wordTotalNum: -1,
       learnedWordNum: -1,
       dailyWordNum: -1,
       alternativePlans: [] as string[][],
@@ -83,7 +83,7 @@ export default defineComponent({
       return this.userInfo.cur_lib_name
     },
     remainingWordNum(): number {
-      return this.totalWordNum - this.learnedWordNum
+      return this.wordTotalNum - this.learnedWordNum
     },
     learnedPercentage(): number {
       return this.learnedWordNum / this.remainingWordNum * 100
@@ -123,7 +123,7 @@ export default defineComponent({
       const res = await fetchVocLibLearningPlan(data) as any;
       this.dailyWordNum = res.data.data.word_per_day;
       this.learnedWordNum = res.data.data.learned_words;
-      this.totalWordNum = res.data.data.total_words;
+      this.wordTotalNum = res.data.data.total_words;
     },
     pickerChange(e: any) {
       // console.log(e)

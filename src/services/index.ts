@@ -13,7 +13,7 @@ export function fetchUserInfo() {
 }
 
 /**
- * 设置用户当前词汇库
+ * 设置当前词汇库
  * @param data
  */
 export function setCurrentVocLib(data: any) {
@@ -44,7 +44,7 @@ export function setVocLibLearningPlan(data: any) {
 }
 
 /**
- * 获取用户的词汇库
+ * 获取 Word Bank
  */
 export function fetchVocabularyBank() {
     return httpService.get({
@@ -113,7 +113,7 @@ export function deleteWordItem(data: any) {
 }
 
 /**
- * 获取用户的所有词库
+ * 获取所有词库
  */
 export function fetchUserVocLibs() {
     return httpService.get({
@@ -132,7 +132,7 @@ export function fetchVocSection(data: any) {
 }
 
 /**
- * 根据单词返回ai生成的问题
+ * 根据单词返回 AI 生成的问题
  */
 export function fetchSelfQuiz(data: any) {
     return httpService.get({
@@ -150,6 +150,9 @@ export function setWordQuizPass(data: any) {
     })
 }
 
+/**
+ * 获取 In-class Quiz
+ */
 export function fetchInClassQuiz(data: any) {
     return httpService.post({
         url: baseURL + "in_class_quiz/get_in_class_quiz",
@@ -157,6 +160,9 @@ export function fetchInClassQuiz(data: any) {
     })
 }
 
+/**
+ * 设置 In-class Quiz 结果
+ */
 export function setInClassQuizResult(data: any) {
     return httpService.post({
         url: baseURL + "in_class_quiz/set_in_class_quiz_result",
@@ -165,7 +171,9 @@ export function setInClassQuizResult(data: any) {
 
 }
 
-/** 登录  */
+/**
+ * 发送登录请求
+ */
 export function handleLogin(data: any) {
     return httpService.post({
         url: baseURL + "user/login",
@@ -190,5 +198,23 @@ export function sendCaptcha(data: any) {
     return httpService.post({
         url: baseURL + "user/send_captcha",
         data: data,
+    })
+}
+
+/**
+ * 获取连续学习天数
+ */
+export function fetchConsecutiveDayNum() {
+    return httpService.get({
+        url: baseURL + "user/get_consecutive_days"
+    })
+}
+
+/**
+ * 获取已学过的单词总数
+ */
+export function fetchLearnedWordTotalNum() {
+    return httpService.get({
+        url: baseURL + "user/words_learned"
     })
 }

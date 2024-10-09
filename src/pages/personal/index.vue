@@ -13,14 +13,14 @@
         </view>
       </view>
     </view>
-    <view class="studentState">
+    <view class="learnedState" v-if="userInfo.username">
       <view class="stateItem">
         <view>Learned</view>
-        <text>900</text>
+        <text>{{ learnedWordTotalNum }}</text>
       </view>
       <view class="stateItem">
         <view>Consecutive Days</view>
-        <text>40</text>
+        <text>{{ consecutiveDayNum }}</text>
       </view>
     </view>
     <view class="studentFunctions">
@@ -44,12 +44,15 @@
 </template>
 <script lang="ts">
 import {defineComponent} from 'vue'
+import {fetchConsecutiveDayNum, fetchLearnedWordTotalNum} from "@/services";
 
 export default defineComponent({
   data() {
     return {
       userInfo: {} as { username: string; email: string },
       avatarUrl: "../../static/images/boy_avatar.png",
+      consecutiveDayNum: -1,
+      learnedWordTotalNum: -1,
       functions: [
         {
           title: 'Learning Calendar',
@@ -71,7 +74,12 @@ export default defineComponent({
     };
   },
   onShow() {
-    this.userInfo = uni.getStorageSync('userInfo') || {};
+    const token = uni.getStorageSync('token')
+    if (token === '') {
+      return
+    }
+    this.userInfo = uni.getStorageSync('userInfo');
+    this.getLearnedProgress();
   },
   computed: {
     emailUsername(): string {
@@ -79,6 +87,12 @@ export default defineComponent({
     },
   },
   methods: {
+    async getLearnedProgress() {
+      let res = await fetchConsecutiveDayNum() as any;
+      this.consecutiveDayNum = res.data.data.consecutive_days;
+      res = await fetchLearnedWordTotalNum() as any;
+      this.learnedWordTotalNum = res.data.data.words_learned;
+    },
     goToLogin() {
       uni.navigateTo({
         url: '/pages/login/index'

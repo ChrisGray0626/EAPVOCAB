@@ -95,9 +95,6 @@ export default defineComponent({
     };
   },
   methods: {
-    init() {
-      this.inClassQuizCode = "";
-    },
     grid1Change(e: any) {
       console.log('grid1Change', e);
     },
@@ -123,7 +120,8 @@ export default defineComponent({
       fetchInClassQuiz(data).then((res: any) => {
         const code = res.data.code;
         if (code === 20000) {
-          this.init();
+          // 重置 Code
+          this.inClassQuizCode = "";
           uni.setStorageSync("inClassQuiz", res.data.data);
           uni.showToast({
             title: "Begin in-class quiz!",
