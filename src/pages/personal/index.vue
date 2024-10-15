@@ -45,11 +45,12 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {fetchConsecutiveDayNum, fetchLearnedWordTotalNum} from "@/services";
+import type {UserInfo} from "../../../type";
 
 export default defineComponent({
   data() {
     return {
-      userInfo: {} as { username: string; email: string },
+      userInfo: {} as UserInfo,
       avatarUrl: "../../static/images/boy_avatar.png",
       consecutiveDayNum: -1,
       learnedWordTotalNum: -1,

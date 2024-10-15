@@ -3,12 +3,12 @@
     <view class="bookCard">
       <!-- 单词表的图片 -->
       <view>
-        <libIcon :libName="curLibName.split(' ')[0]"/>
+        <libIcon :libName="userInfo.cur_lib_name.split(' ')[0]"/>
       </view>
       <!-- 单词表的描述 -->
       <view class="bookDetails">
         <view class="bookName">
-          <text>{{ curLibName }}</text>
+          <text>{{ userInfo.cur_lib_name }}</text>
           <navigator hover-class="none" url="/pages/moduleChange/index">
             <view class="changeModule">
               <text>Change Module</text>
@@ -54,10 +54,12 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {fetchVocLibLearningPlan, setVocLibLearningPlan} from "@/services";
+import type {UserInfo} from "../../../type";
 
 export default defineComponent({
   data() {
     return {
+      userInfo: {} as UserInfo,
       isShow: true,
       wordTotalNum: -1,
       learnedWordNum: -1,
@@ -72,16 +74,12 @@ export default defineComponent({
   created() {
   },
   async onShow() {
+    this.userInfo = uni.getStorageSync('userInfo');
+    console.log("userInfo", this.userInfo)
     await this.getCurLibInfo();
     this.initAlternativePlans()
   },
   computed: {
-    userInfo() {
-      return uni.getStorageSync('userInfo')
-    },
-    curLibName(): string {
-      return this.userInfo.cur_lib_name
-    },
     remainingWordNum(): number {
       return this.wordTotalNum - this.learnedWordNum
     },

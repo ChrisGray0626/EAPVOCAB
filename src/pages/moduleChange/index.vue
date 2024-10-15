@@ -40,6 +40,7 @@
 <script lang="ts">
 import {defineComponent} from "vue";
 import {fetchUserVocLibs, fetchVocSection, setCurrentVocLib} from "@/services";
+import type {UserInfo} from "../../../type";
 
 export default defineComponent({
   data() {
@@ -75,7 +76,6 @@ export default defineComponent({
             });
           });
         }
-        console.log("vocLibs: ", this.vocLibs);
       });
     },
     collapseChange(e: any) {
@@ -95,7 +95,12 @@ export default defineComponent({
             title: 'Set successfully',
             icon: 'success',
           });
-          this.closeSetCurModuleModal();
+          // Refresh User Info
+          let userInfo = uni.getStorageSync('userInfo') as UserInfo;
+          userInfo.cur_lib = this.curLib.id;
+          userInfo.cur_lib_name = this.curLib.name;
+          uni.setStorageSync('userInfo', userInfo);
+
           this.goBack();
         } else {
           uni.showToast({

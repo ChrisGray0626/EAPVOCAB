@@ -30,7 +30,7 @@
           <view class="bookName">
             <text>{{ userInfo.cur_lib_name }}</text>
           </view>
-          <view class="edit" @click="goToGoalSetting">
+          <view class="change" @click="goToGoalSetting">
             <text>Change</text>
             <uni-icons color='rgb(195, 195, 195)' size='18' type="right"></uni-icons>
           </view>
@@ -83,17 +83,12 @@
 import {defineComponent} from 'vue'
 
 import {fetchUserInfo, fetchVocLibLearningPlan} from "@/services";
+import type {UserInfo} from "../../../type";
 
 export default defineComponent({
   data() {
     return {
-      userInfo: {} as {
-        username: string;
-        email: string,
-        role: string,
-        cur_lib: number,
-        cur_lib_name: string,
-      },
+      userInfo: {} as UserInfo,
       avatarUrl: "../../static/images/boy_avatar.png",
       curLibName: "",
       learnedWordNum: -1,
