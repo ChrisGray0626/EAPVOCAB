@@ -88,7 +88,7 @@ export default defineComponent({
       items2: [
         { src: '../../static/images/battle.png', width: '100', height: '100', text: 'Word Battle' },
         { src: '../../static/images/quiz.png', width: '100', height: '100', text: 'In-class Quiz' },
-        { src: '../../static/images/game.png', width: '100', height: '100', text: 'In-class Activity' }
+        {src: '../../static/images/game.png', width: '100', height: '100', text: 'In-class Game'}
       ],
       isInClassQuizModalShowed: false,
       inClassQuizCode: ""

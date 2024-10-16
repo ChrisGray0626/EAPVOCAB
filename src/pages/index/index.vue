@@ -44,7 +44,7 @@
         </view>
         <view class="schedule">
           <view>
-            <text>{{ learnedWordNum }} / {{ remainingWordNum }}</text>
+            <text>{{ learnedWordNum }} / {{ wordTotalNum }}</text>
           </view>
           <view class="remainDays">
             <text>{{ remainingDayNum }} days remaining</text>
