@@ -143,10 +143,10 @@ export default defineComponent({
       if (checkFieldIsEmpty(this.module, 'module')) {
         return;
       }
-      // Check email
-      if (!checkEmail(this.email)) {
-        return;
-      }
+      // TODO Check email
+      // if (!checkEmail(this.email)) {
+      //   return;
+      // }
       // Check captcha
       if (checkFieldIsEmpty(this.captcha, 'captcha')) {
         return;
