@@ -73,8 +73,9 @@
 </template>
 <script lang="ts">
 import {defineComponent} from 'vue'
-import {fetchInClassQuiz} from "@/services";
-import {handleAccountExpired} from "@/services/permission";
+import {fetchInClassQuiz} from "@/api";
+import {handleAccountExpired} from "@/api/permission";
+import type {Response} from "@/type";
 
 export default defineComponent({
   data() {
@@ -113,31 +114,23 @@ export default defineComponent({
         this.goToInClassActivity();
       }
     },
-    handleInClassQuiz() {
+    async handleInClassQuiz() {
       const data = {
         share_code: this.inClassQuizCode
       }
-      fetchInClassQuiz(data).then((res: any) => {
-        const code = res.data.code;
-        if (code === 20000) {
-          // 重置 Code
-          this.inClassQuizCode = "";
-          uni.setStorageSync("inClassQuiz", res.data.data);
-          uni.showToast({
-            title: "Begin in-class quiz!",
-            icon: "success"
-          })
-          this.closeInClassQuizModal();
-          this.goToInClassQuiz();
-        } else {
-          uni.showToast({
-            title: "Share code is wrong or quiz closed.",
-            icon: 'error'
-          })
-          console.error(res.data)
-        }
+      let res = await fetchInClassQuiz(data) as Response<any>;
+      if (res.code != 20000) {
+        return
+      }
+      // 重置 Code
+      this.inClassQuizCode = "";
+      uni.setStorageSync("inClassQuiz", res.data);
+      uni.showToast({
+        title: "Begin in-class quiz!",
+        icon: "success"
       })
-
+      this.closeInClassQuizModal();
+      this.goToInClassQuiz();
     },
     confirmInClassQuizModal() {
       this.handleInClassQuiz();

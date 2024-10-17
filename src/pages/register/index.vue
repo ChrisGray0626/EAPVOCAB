@@ -79,8 +79,9 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 
-import {handleRegister, sendCaptcha} from "@/services"
+import {handleRegister, sendCaptcha} from "@/api"
 import {checkEmail, checkFieldIsEmpty} from "@/util/fieldUtil";
+import type {Response} from "@/type";
 
 export default defineComponent({
   data() {
@@ -95,7 +96,7 @@ export default defineComponent({
     }
   },
   methods: {
-    sendCode() {
+    async sendCode() {
       // 检查邮箱填写情况
       if (checkFieldIsEmpty(this.email, 'email')) {
         return;
@@ -110,27 +111,20 @@ export default defineComponent({
       let data = {
         email: this.email,
       };
-      sendCaptcha(data).then((res: any) => {
-            if (res.data.code === 20000) {
-              uni.showToast({
-                title: "Please check your email",
-                icon: 'success',
-              })
-            } else {
-              uni.showToast({
-                    title: res.data.msg,
-                    icon: 'error',
-                  }
-              )
-            }
-            // 初始化倒计时
-            this.initCountDown();
-            // 设置验证码发送状态
-            this.isSending = false;
-          }
-      )
+      let res = await sendCaptcha(data) as Response<any>;
+      if (res.code != 20000) {
+        return
+      }
+      uni.showToast({
+        title: "Please check your email",
+        icon: 'success',
+      })
+      // 初始化倒计时
+      this.initCountDown();
+      // 设置验证码发送状态
+      this.isSending = false;
     },
-    signUp() {
+    async signUp() {
       // Check nickname
       if (checkFieldIsEmpty(this.nickname, 'nickname')) {
         return;
@@ -158,20 +152,15 @@ export default defineComponent({
         email: this.email,
         captcha: this.captcha,
       };
-      handleRegister(data).then((res: any) => {
-        if (res.data.code === 20000) {
-          uni.showToast({
-            title: "Registration successful!",
-            icon: 'success',
-          })
-          this.goToLogin();
-        } else {
-          uni.showToast({
-            title: res.data.msg,
-            icon: 'error',
-          })
-        }
+      let res = await handleRegister(data) as Response<any>;
+      if (res.code != 20000) {
+        return
+      }
+      uni.showToast({
+        title: "Registration successful!",
+        icon: 'success',
       })
+      this.goToLogin();
     },
     goToUserAgreement() {
       uni.navigateTo({

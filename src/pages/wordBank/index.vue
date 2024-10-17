@@ -99,13 +99,16 @@
 import {defineComponent} from 'vue'
 
 import {
-  fetchVocabularyBank,
-  fetchWordsInSection,
   addWordItem,
-  fetchWordsFromPassage,
   addWords,
-  deleteWordItem, fetchExplanationFromWord
-} from '@/services'
+  deleteWordItem,
+  fetchExplanationFromWord,
+  fetchVocabularyBank,
+  fetchWordsFromPassage,
+  fetchWordsInSection
+} from '@/api'
+import type {Response} from "@/type";
+import {checkFieldIsEmpty} from "@/util/fieldUtil";
 
 export default defineComponent({
   data() {
@@ -162,19 +165,22 @@ export default defineComponent({
   },
   methods: {
     // 加载单词列表
-    loadWords() {
-      fetchVocabularyBank().then((res: any) => {
-        let data = res.data.data
-        this.voc_lib_id = data.voc_lib_id
-        this.voc_sec_id = data.voc_sec_id
-        data = {
-          voc_lib_id: this.voc_lib_id,
-          voc_sec_id: this.voc_sec_id,
-        }
-        fetchWordsInSection(data).then((res: any) => {
-          this.words = res.data.data
-        })
-      })
+    async loadWords() {
+      let res = await fetchVocabularyBank() as Response<any>;
+      if (res.code != 20000) {
+        return
+      }
+      this.voc_lib_id = res.data.voc_lib_id
+      this.voc_sec_id = res.data.voc_sec_id
+      const data = {
+        voc_lib_id: this.voc_lib_id,
+        voc_sec_id: this.voc_sec_id,
+      }
+      res = await fetchWordsInSection(data) as Response<any>;
+      if (res.code != 20000) {
+        return
+      }
+      this.words = res.data
     },
     // 触发悬浮按钮
     triggerFab(e: any) {
@@ -197,17 +203,14 @@ export default defineComponent({
           content: "Are you sure to delete this word?",
           confirmText: "Confirm",
           cancelText: "Cancel",
-          success: (res) => {
+          success: async (res) => {
             if (res.confirm) {
-              deleteWordItem(data).then((res: any) => {
-                if (res.data.code === 20000) {
-                  uni.showToast({title: "Delete successfully!", icon: "success"})
-                  this.loadWords()
-                } else {
-                  uni.showToast({title: "Failed to delete. Please try again!", icon: "error"})
-                  console.error(res.data.msg)
-                }
-              })
+              let res = await deleteWordItem(data) as Response<any>;
+              if (res.code != 20000) {
+                return
+              }
+              uni.showToast({title: "Delete successfully!", icon: "success"})
+              this.loadWords()
             }
           }
         })
@@ -231,40 +234,37 @@ export default defineComponent({
     closeAddWordModal() {
       this.isAddWordShowed = false
     },
-    handleAddWordItem() {
-      uni.showLoading()
-      // 获取单词释义
+    async handleAddWordItem() {
+      if (checkFieldIsEmpty(this.addedWord, "word")) {
+        return
+      }
       let data = {
         word: this.addedWord,
       }
+      // 获取单词释义
+      uni.showLoading()
       // TODO fetchExplanationFromWord
-      fetchExplanationFromWord(data).then((res: any) => {
-        uni.hideLoading()
-        if (res.data.code === 20000) {
-          // 释义处理，一词多义、前缀等
-          this.addedExplanation = res.data.data.match_word.explanation.split(";")[0]
-          this.addedExplanation = this.addedExplanation.replace("1. ", "")
-          // 添加单词
-          let data = {
-            voc_sec_id: this.voc_sec_id,
-            word: this.addedWord,
-            explanation: this.addedExplanation,
-          }
-          addWordItem(data).then((res: any) => {
-            if (res.data.code === 20000) {
-              this.closeAddWordModal()
-              uni.showToast({title: "Add successfully!", icon: "success"})
-              this.loadWords()
-            } else {
-              uni.showToast({title: "Failed to add. Please try again!", icon: "error"})
-              console.error(res.data.msg)
-            }
-          })
-        } else {
-          uni.showToast({title: "Failed to add. Please try again!", icon: "error"})
-          console.error(res.data.msg)
-        }
-      })
+      let res = await fetchExplanationFromWord(data) as Response<any>;
+      uni.hideLoading()
+      if (res.code != 20000) {
+        return
+      }
+      // 释义处理，一词多义、前缀等
+      this.addedExplanation = res.data.match_word.explanation.split(";")[0]
+      this.addedExplanation = this.addedExplanation.replace("1. ", "")
+      // 添加单词
+      let data1 = {
+        voc_sec_id: this.voc_sec_id,
+        word: this.addedWord,
+        explanation: this.addedExplanation,
+      }
+      res = await addWordItem(data1) as Response<any>;
+      if (res.code != 20000) {
+        return
+      }
+      this.closeAddWordModal()
+      uni.showToast({title: "Add successfully!", icon: "success"})
+      this.loadWords()
     },
     // 通过句子添加单词弹窗
     initAddWordFromPassageModal() {
@@ -286,25 +286,25 @@ export default defineComponent({
     closeAddWordFromPassageModal() {
       this.isAddWordFromPassageShowed = false
     },
-    getWordsFromPassage() {
-      // 生成单词中
-      uni.showLoading({title: "Generating words..."})
+    async getWordsFromPassage() {
+      if (checkFieldIsEmpty(this.passage, "passage")) {
+        return
+      }
       const data = {
         passage: this.passage,
       }
       console.log("data", data)
-      fetchWordsFromPassage(data).then((res: any) => {
-        // 生成完成
-        uni.hideLoading()
-        if (res.data.code === 20000) {
-          this.initAddWordFromPassageModal()
-          this.candidateWords = res.data.data.words
-          this.loadCheckBox()
-        } else {
-          uni.showToast({title: "Failed to generate words. Please try again!", icon: "error"})
-          console.log(res.data.msg)
-        }
-      })
+      // 生成单词中
+      uni.showLoading({title: "Generating words..."})
+      let res = await fetchWordsFromPassage(data) as Response<any>;
+      // 生成完成
+      uni.hideLoading()
+      if (res.code != 20000) {
+        return
+      }
+      this.initAddWordFromPassageModal()
+      this.candidateWords = res.data.words
+      this.loadCheckBox()
     },
     loadCheckBox() {
       const n = this.candidateWords.length
@@ -313,23 +313,23 @@ export default defineComponent({
         this.checkBoxRanges.push({value: i, text: this.candidateWords[i].word})
       }
     },
-    handleAddWordFromPassage() {
+    async handleAddWordFromPassage() {
       // 获取选中的单词
-      const selectedWords = this.isChecks.map((index) => {
+      const selectedWords = this.isChecks.map((value, index, array) => {
         return this.candidateWords[index]
       })
       const data = {
         voc_sec_id: this.voc_sec_id,
         words: selectedWords,
       }
-      addWords(data).then((res: any) => {
-        if (res.data.code === 20000) {
-          this.closeAddWordFromPassageModal()
-          uni.showToast({title: "Add successfully!", icon: "success"})
-          // 刷新单词列表
-          this.loadWords()
-        }
-      })
+      let res = await addWords(data) as Response<any>;
+      if (res.code != 20000) {
+        return
+      }
+      this.closeAddWordFromPassageModal()
+      uni.showToast({title: "Add successfully!", icon: "success"})
+      // 刷新单词列表
+      this.loadWords()
     }
   },
 })

@@ -82,8 +82,8 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 
-import {fetchUserInfo, fetchVocLibLearningPlan} from "@/services";
-import type {UserInfo} from "../../../type";
+import {fetchUserInfo, fetchVocLibLearningPlan} from "@/api";
+import type {Response, UserInfo} from "@/type";
 
 export default defineComponent({
   data() {
@@ -120,18 +120,24 @@ export default defineComponent({
   },
   methods: {
     async getUserInfo() {
-      const res = await fetchUserInfo() as any;
-      this.userInfo = res.data.data
+      const res = await fetchUserInfo() as Response<any>;
+      if (res.code != 20000) {
+        return
+      }
+      this.userInfo = res.data
       uni.setStorageSync('userInfo', this.userInfo)
     },
     async getCurLibInfo() {
       const data = {
         voc_lib_id: uni.getStorageSync('userInfo').cur_lib
       }
-      const res = await fetchVocLibLearningPlan(data) as any;
-      this.dailyWordNum = res.data.data.word_per_day;
-      this.learnedWordNum = res.data.data.learned_words;
-      this.wordTotalNum = res.data.data.total_words;
+      const res = await fetchVocLibLearningPlan(data) as Response<any>;
+      if (res.code != 20000) {
+        return
+      }
+      this.dailyWordNum = res.data.word_per_day;
+      this.learnedWordNum = res.data.learned_words;
+      this.wordTotalNum = res.data.total_words;
     },
     goToLogin() {
       uni.navigateTo({

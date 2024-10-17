@@ -44,8 +44,8 @@
 </template>
 <script lang="ts">
 import {defineComponent} from 'vue'
-import {fetchConsecutiveDayNum, fetchLearnedWordTotalNum} from "@/services";
-import type {UserInfo} from "../../../type";
+import {fetchConsecutiveDayNum, fetchLearnedWordTotalNum} from "@/api";
+import type {UserInfo} from "@/type";
 
 export default defineComponent({
   data() {
@@ -90,9 +90,15 @@ export default defineComponent({
   methods: {
     async getLearnedProgress() {
       let res = await fetchConsecutiveDayNum() as any;
-      this.consecutiveDayNum = res.data.data.consecutive_days;
+      if (res.code != 20000) {
+        return
+      }
+      this.consecutiveDayNum = res.data.consecutive_days;
       res = await fetchLearnedWordTotalNum() as any;
-      this.learnedWordTotalNum = res.data.data.words_learned;
+      if (res.code != 20000) {
+        return
+      }
+      this.learnedWordTotalNum = res.data.words_learned;
     },
     goToLogin() {
       uni.navigateTo({

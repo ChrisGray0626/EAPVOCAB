@@ -53,8 +53,8 @@
 </template>
 <script lang="ts">
 import {defineComponent} from 'vue'
-import {fetchVocLibLearningPlan, setVocLibLearningPlan} from "@/services";
-import type {UserInfo} from "../../../type";
+import {fetchVocLibLearningPlan, setVocLibLearningPlan} from "@/api";
+import type {Response, UserInfo} from "@/type";
 
 export default defineComponent({
   data() {
@@ -118,10 +118,13 @@ export default defineComponent({
       const data = {
         voc_lib_id: this.userInfo.cur_lib
       }
-      const res = await fetchVocLibLearningPlan(data) as any;
-      this.dailyWordNum = res.data.data.word_per_day;
-      this.learnedWordNum = res.data.data.learned_words;
-      this.wordTotalNum = res.data.data.total_words;
+      const res = await fetchVocLibLearningPlan(data) as Response<any>;
+      if (res.code != 20000) {
+        return
+      }
+      this.dailyWordNum = res.data.word_per_day;
+      this.learnedWordNum = res.data.learned_words;
+      this.wordTotalNum = res.data.total_words;
     },
     pickerChange(e: any) {
       // console.log(e)
@@ -151,7 +154,10 @@ export default defineComponent({
         voc_lib_id: this.userInfo.cur_lib,
         new_word_per_day: this.selectedDailyWordNum,
       }
-      await setVocLibLearningPlan(data);
+      const res = await setVocLibLearningPlan(data) as Response<any>;
+      if (res.code != 20000) {
+        return
+      }
       uni.showToast({title: "Save successfully!", icon: 'success'})
       this.goBack();
     },

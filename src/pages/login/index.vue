@@ -33,8 +33,9 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 
-import {fetchUserInfo, handleLogin} from "@/services"
+import {fetchUserInfo, handleLogin} from "@/api"
 import {checkEmail, checkFieldIsEmpty} from "@/util/fieldUtil";
+import type {Response} from "@/type";
 
 export default defineComponent({
   data() {
@@ -58,17 +59,21 @@ export default defineComponent({
         email: this.email,
         password: this.password
       }
-      handleLogin(data).then((res: any) => {
-        if (res.data.code == 20000) {
-          fetchUserInfo().then((res: any) => {
-            uni.setStorageSync('userInfo', res.data.data)
-            uni.showToast({title: "Login successfully!", icon: 'success'})
-            this.gotoIndex()
-          })
-        } else {
-          uni.showToast({title: "Login failed. Please check your email and password!", icon: 'error'})
-        }
-      })
+      let res = await handleLogin(data) as Response<any>;
+      if (res.code === 0) {
+        uni.showToast({title: "Login failed. Please check your email and password!", icon: 'error'})
+        return
+      }
+      if (res.code != 20000) {
+        return
+      }
+      res = await fetchUserInfo() as Response<any>;
+      if (res.code != 20000) {
+        return
+      }
+      uni.setStorageSync('userInfo', res.data)
+      uni.showToast({title: "Login successfully!", icon: 'success'})
+      this.gotoIndex()
     },
     gotoIndex() {
       uni.switchTab({

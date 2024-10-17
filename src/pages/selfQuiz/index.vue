@@ -66,7 +66,8 @@
 </template>
 <script lang="ts">
 import {defineComponent} from 'vue'
-import {fetchSelfQuiz, setWordQuizPass} from "@/services";
+import {fetchSelfQuiz, setWordQuizPass} from "@/api";
+import type {Response} from "@/type";
 
 export default defineComponent({
   data() {
@@ -110,7 +111,7 @@ export default defineComponent({
     },
   },
   methods: {
-    getSelfQuiz() {
+    async getSelfQuiz() {
       uni.showLoading({
         title: "Loading quiz!"
       });
@@ -119,13 +120,15 @@ export default defineComponent({
       const data = {
         voc_lib_id: vocLibId
       }
-      fetchSelfQuiz(data).then((res: any) => {
-        this.wordQuizzes = res.data.data
-        // console.log("wordQuestions", this.wordQuestions)
-        // 初始化答案
-        this.initAnswer()
-        uni.hideLoading()
-      })
+      let res = await fetchSelfQuiz(data) as Response<any>;
+      if (res.code != 20000) {
+        return
+      }
+      this.wordQuizzes = res.data
+      // console.log("wordQuestions", this.wordQuestions)
+      // 初始化答案
+      this.initAnswer()
+      uni.hideLoading()
     },
     initAnswer() {
       for (let i = 0; i < this.totalWordQuizCount; i++) {
@@ -149,7 +152,7 @@ export default defineComponent({
       // 设置未作答
       this.isTry = false
     },
-    handleConfirm() {
+    async handleConfirm() {
       // 设置已作答
       this.isTry = true
       // 判断正误情况
@@ -172,9 +175,10 @@ export default defineComponent({
               word_id: this.curWordQuiz.word_id
             }
             // 发送通过请求
-            setWordQuizPass(data).then((res: any) => {
-              // console.log("passWordQuiz", res)
-            })
+            let res = await setWordQuizPass(data) as Response<any>;
+            if (res.code != 20000) {
+              return
+            }
           }
         } else {
           // 翻页至下一题
