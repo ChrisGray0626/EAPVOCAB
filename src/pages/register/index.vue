@@ -83,6 +83,7 @@ import {handleRegister, sendCaptcha} from "@/api"
 import {checkEmail, checkFieldIsEmpty} from "@/util/fieldUtil";
 import type {Response} from "@/type";
 
+
 export default defineComponent({
   data() {
     return {
