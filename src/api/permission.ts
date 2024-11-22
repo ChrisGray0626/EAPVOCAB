@@ -1,21 +1,5 @@
 export function handlePermission() {
-    handleRequestPermission()
     handleRoutePermission()
-}
-
-function handleRequestPermission() {
-    uni.addInterceptor('request', {
-        success(res) {
-            if (res.data.code === 20000) {
-                const token = res.header['x-token']
-                uni.setStorageSync('token', token)
-                // console.log('set token: ', token)
-            } else if (res.statusCode === 401) {
-                handleAccountExpired()
-                return false
-            }
-        },
-    })
 }
 
 const whiteList = [
@@ -24,6 +8,7 @@ const whiteList = [
     '/pages/index/index',
     '/pages/discover/index',
     '/pages/personal/index',
+    '/pages/userAgreement/index',
 ]
 
 const routeTypes = ["navigateTo", "redirectTo"]
@@ -46,7 +31,7 @@ function handleRoutePermission() {
 }
 
 export function handleAccountExpired() {
-    uni.removeStorageSync('token')
+    uni.clearStorageSync()
     uni.showModal({
         title: 'Warning',
         content: 'Account Expired, Please Login',

@@ -19,13 +19,14 @@ export function checkEmail(email: string) {
   if (checkFieldIsEmpty(email, 'email')) {
     return false
   }
-  const reg = /^([A-Za-z0-9_\-.\u4e00-\u9fa5])+@xjtlu.edu.cn$/;
-  if (!reg.test(email)) {
-    uni.showToast({
-      title: 'Please input your XJTLU email',
-      icon: 'error',
-    })
-    return false
-  }
+  // TODO Check email check
+  // const reg = /^([A-Za-z0-9_\-.\u4e00-\u9fa5])+@xjtlu.edu.cn$/;
+  // if (!reg.test(email)) {
+  //   uni.showToast({
+  //     title: 'Please input your XJTLU email',
+  //     icon: 'error',
+  //   })
+  //   return false
+  // }
   return true
 }

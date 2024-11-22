@@ -30,8 +30,11 @@
     {
       "path": "pages/selfQuiz/index"
     },
-        {
+    {
       "path": "pages/inClassQuiz/index"
+    },
+    {
+      "path": "pages/userAgreement/index"
     }
   ],
   "globalStyle": {

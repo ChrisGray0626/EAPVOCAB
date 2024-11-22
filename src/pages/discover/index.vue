@@ -73,8 +73,9 @@
 </template>
 <script lang="ts">
 import {defineComponent} from 'vue'
-import {fetchInClassQuiz} from "@/services";
-import {handleAccountExpired} from "@/services/permission";
+import {fetchInClassQuiz} from "@/api";
+import {handleAccountExpired} from "@/api/permission";
+import type {Response} from "@/type";
 
 export default defineComponent({
   data() {
@@ -88,16 +89,13 @@ export default defineComponent({
       items2: [
         { src: '../../static/images/battle.png', width: '100', height: '100', text: 'Word Battle' },
         { src: '../../static/images/quiz.png', width: '100', height: '100', text: 'In-class Quiz' },
-        { src: '../../static/images/game.png', width: '100', height: '100', text: 'In-class Activity' }
+        {src: '../../static/images/game.png', width: '100', height: '100', text: 'In-class Game'}
       ],
       isInClassQuizModalShowed: false,
       inClassQuizCode: ""
     };
   },
   methods: {
-    init() {
-      this.inClassQuizCode = "";
-    },
     grid1Change(e: any) {
       console.log('grid1Change', e);
     },
@@ -116,30 +114,23 @@ export default defineComponent({
         this.goToInClassActivity();
       }
     },
-    handleInClassQuiz() {
+    async handleInClassQuiz() {
       const data = {
         share_code: this.inClassQuizCode
       }
-      fetchInClassQuiz(data).then((res: any) => {
-        const code = res.data.code;
-        if (code === 20000) {
-          this.init();
-          uni.setStorageSync("inClassQuiz", res.data.data);
-          uni.showToast({
-            title: "Begin in-class quiz!",
-            icon: "success"
-          })
-          this.closeInClassQuizModal();
-          this.goToInClassQuiz();
-        } else {
-          uni.showToast({
-            title: "Share code is wrong or quiz closed.",
-            icon: 'error'
-          })
-          console.error(res.data)
-        }
+      let res = await fetchInClassQuiz(data) as Response<any>;
+      if (res.code != 20000) {
+        return
+      }
+      // 重置 Code
+      this.inClassQuizCode = "";
+      uni.setStorageSync("inClassQuiz", res.data);
+      uni.showToast({
+        title: "Begin in-class quiz!",
+        icon: "success"
       })
-
+      this.closeInClassQuizModal();
+      this.goToInClassQuiz();
     },
     confirmInClassQuizModal() {
       this.handleInClassQuiz();
@@ -170,11 +161,9 @@ export default defineComponent({
       })
     },
     goToInClassActivity() {
-      // TODO Go to in-class activity page
       window.location.href = "http://114.55.87.45:8003/game";
     },
     goToWordBattle() {
-      // TODO Go to word battle page
       window.location.href = "http://114.55.87.45:8004";
     }
   },
