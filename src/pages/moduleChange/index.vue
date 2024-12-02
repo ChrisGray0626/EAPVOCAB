@@ -39,7 +39,9 @@
 
 <script lang="ts">
 import {defineComponent} from "vue";
-import {fetchUserVocLibs, fetchVocSection, setCurrentVocLib} from "@/services";
+import {fetchUserVocLibs, fetchVocSection, setCurrentVocLib} from "@/api";
+import type {Response, UserInfo} from "@/type";
+
 export default defineComponent({
   data() {
     return {
@@ -59,47 +61,49 @@ export default defineComponent({
     }
   },
   methods: {
-    getVocLib() {
-      fetchUserVocLibs().then((res: any) => {
-        if (res.data.code == 20000) {
-          this.vocLibs = res.data.data;
-          this.vocLibs.forEach((item) => {
-            const data = {
-              id: item.id
-            }
-            fetchVocSection(data).then((res: any) => {
-              if (res.data.code == 20000) {
-                item.sections = res.data.data;
-              }
-            });
-          });
+    async getVocLib() {
+      let res = await fetchUserVocLibs() as Response<any>;
+      if (res.code != 20000) {
+        return
+      }
+      this.vocLibs = res.data;
+      for (const item of this.vocLibs) {
+        const data = {
+          id: item.id
         }
-      });
+        let res = await fetchVocSection(data) as Response<any>;
+        if (res.code != 20000) {
+          return
+        }
+        item.sections = res.data;
+        }
     },
     collapseChange(e: any) {
-      this.curLibIdx = e;
+      // TODO e is not the index of the lib
+      if (e != '') {
+        this.curLibIdx = e;
+      }
       this.showSetCurModuleModal();
     },
-    confirmSetCurModuleModal() {
+    async confirmSetCurModuleModal() {
       const data = {
         lib_id: this.curLib.id
       }
-      setCurrentVocLib(data).then((res: any) => {
-        if (res.data.code == 20000) {
-          uni.showToast({
-            title: 'Set successfully',
-            icon: 'success',
-          });
-          this.closeSetCurModuleModal();
-          this.goBack();
-        } else {
-          uni.showToast({
-            title: 'Set failed',
-            icon: 'error',
-          });
-          console.error(res.data.msg);
-        }
+      const res = await setCurrentVocLib(data) as Response<any>;
+      if (res.code != 20000) {
+        return
+      }
+      uni.showToast({
+        title: 'Set successfully',
+        icon: 'success',
       });
+      // Refresh User Info
+      let userInfo = uni.getStorageSync('userInfo') as UserInfo;
+      userInfo.cur_lib = this.curLib.id;
+      userInfo.cur_lib_name = this.curLib.name;
+      uni.setStorageSync('userInfo', userInfo);
+
+      this.goBack();
     },
     cancelSetCurModuleModal() {
       this.closeSetCurModuleModal();

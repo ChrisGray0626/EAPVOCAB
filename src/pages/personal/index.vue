@@ -5,22 +5,22 @@
         <u-avatar :src="avatarUrl" size="65" class="avatar"/>
         <view class="info">
           <view class="username" v-if="userInfo.username" >{{userInfo.username}}</view>
-          <view class="username" v-else >Log In</view>
-          <view class="userid" v-if="userInfo.username">ID: 123456</view>
+          <view class="username" v-else @click="goToLogin">Log In</view>
+          <view class="userid" v-if="userInfo.username">ID: {{ emailUsername }}</view>
         </view>
         <view class="editMyInfo">
           <uni-icons type="gear" size="40" color="#696969"></uni-icons>
         </view>
       </view>
     </view>
-    <view class="studentState">
+    <view class="learnedState" v-if="userInfo.username">
       <view class="stateItem">
         <view>Learned</view>
-        <text>900</text>
+        <text>{{ learnedWordTotalNum }}</text>
       </view>
       <view class="stateItem">
         <view>Consecutive Days</view>
-        <text>40</text>
+        <text>{{ consecutiveDayNum }}</text>
       </view>
     </view>
     <view class="studentFunctions">
@@ -44,12 +44,16 @@
 </template>
 <script lang="ts">
 import {defineComponent} from 'vue'
+import {fetchConsecutiveDayNum, fetchLearnedWordTotalNum} from "@/api";
+import type {UserInfo} from "@/type";
 
 export default defineComponent({
   data() {
     return {
-      userInfo: {} as { username: string; email: string },
-      avatarUrl: '',
+      userInfo: {} as UserInfo,
+      avatarUrl: "../../static/images/boy_avatar.png",
+      consecutiveDayNum: -1,
+      learnedWordTotalNum: -1,
       functions: [
         {
           title: 'Learning Calendar',
@@ -71,8 +75,37 @@ export default defineComponent({
     };
   },
   onShow() {
-    this.userInfo = uni.getStorageSync('userInfo') || {};
+    const token = uni.getStorageSync('token')
+    if (token === '') {
+      return
+    }
+    this.userInfo = uni.getStorageSync('userInfo');
+    this.getLearnedProgress();
   },
+  computed: {
+    emailUsername(): string {
+      return this.userInfo.email ? this.userInfo.email.split('@')[0] : '';
+    },
+  },
+  methods: {
+    async getLearnedProgress() {
+      let res = await fetchConsecutiveDayNum() as any;
+      if (res.code != 20000) {
+        return
+      }
+      this.consecutiveDayNum = res.data.consecutive_days;
+      res = await fetchLearnedWordTotalNum() as any;
+      if (res.code != 20000) {
+        return
+      }
+      this.learnedWordTotalNum = res.data.words_learned;
+    },
+    goToLogin() {
+      uni.navigateTo({
+        url: '/pages/login/index'
+      })
+    },
+  }
 })
 </script>
 <style lang="less" scoped>

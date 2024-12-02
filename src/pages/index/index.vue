@@ -25,50 +25,51 @@
         <u-divider/>
       </view>
 
-      <view class="englishContent">
+      <view class="englishContent" v-if="userInfo.cur_lib_name">
         <view class="bookInfo">
           <view class="bookName">
             <text>{{ userInfo.cur_lib_name }}</text>
           </view>
-          <view class="edit" @click="goToGoalSetting">
+          <view class="change" @click="goToGoalSetting">
             <text>Change</text>
             <uni-icons color='rgb(195, 195, 195)' size='18' type="right"></uni-icons>
           </view>
         </view>
         <view class="progress">
           <u-line-progress
-              :percentage="studiedPercentage"
+              :percentage="learnedPercentage"
               :showText="false"
               activeColor="#78A4F4"
           />
         </view>
         <view class="schedule">
           <view>
-            <text>{{ studiedWords }} / {{ remainWords }}</text>
+            <text>{{ learnedWordNum }} / {{ wordTotalNum }}</text>
           </view>
           <view class="remainDays">
-            <text>{{ remainDayNum }} days remaining</text>
+            <text>{{ remainingDayNum }} days remaining</text>
           </view>
         </view>
       </view>
     </view>
-    <view class="todayGoal">
-      <text class="goalText">- Today's Goal -</text>
-      <view class="goalContent">
-        <view class="newWords">
-          <text>15</text>
-          <text>New</text>
-        </view>
-        <view class="newWords">
-          <text>10</text>
-          <text>Review</text>
-        </view>
-        <view class="newWords">
-          <text>25</text>
-          <text>Total</text>
-        </view>
-      </view>
-    </view>
+    <!--    Remove today goal-->
+    <!--    <view class="todayGoal">-->
+    <!--      <text class="goalText">- Today's Goal -</text>-->
+    <!--      <view class="goalContent">-->
+    <!--        <view class="newWords">-->
+    <!--          <text>15</text>-->
+    <!--          <text>New</text>-->
+    <!--        </view>-->
+    <!--        <view class="newWords">-->
+    <!--          <text>10</text>-->
+    <!--          <text>Review</text>-->
+    <!--        </view>-->
+    <!--        <view class="newWords">-->
+    <!--          <text>25</text>-->
+    <!--          <text>Total</text>-->
+    <!--        </view>-->
+    <!--      </view>-->
+    <!--    </view>-->
     <view class='startWords'>
       <u-button shape="circle" type='primary' @click.stop="goToWordTest">
         <text>Start self-test quiz!</text>
@@ -81,46 +82,62 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 
-import {fetchUserInfo} from "@/services";
+import {fetchUserInfo, fetchVocLibLearningPlan} from "@/api";
+import type {Response, UserInfo} from "@/type";
 
 export default defineComponent({
   data() {
     return {
-      userInfo: {} as {
-        username: string;
-        email: string,
-        role: string,
-        cur_lib: number,
-        cur_lib_name: string,
-      },
+      userInfo: {} as UserInfo,
       avatarUrl: "../../static/images/boy_avatar.png",
       curLibName: "",
-      remainWords: 3272,
-      studiedWords: 666,
-      remainDayNum: 100,
+      learnedWordNum: -1,
+      wordTotalNum: -1,
+      dailyWordNum: -1,
     };
   },
-  onShow() {
-    this.getUserInfo()
-    // console.log("onShow", this.userInfo)
+  async onShow() {
+    const token = uni.getStorageSync('token')
+    if (token === '') {
+      return
+    }
+    await this.getUserInfo()
+    this.getCurLibInfo()
   },
   computed: {
     emailUsername(): string {
       return this.userInfo.email ? this.userInfo.email.split('@')[0] : '';
     },
-    studiedPercentage(): number {
-      return this.studiedWords / this.remainWords * 100
+    remainingWordNum(): number {
+      return this.wordTotalNum - this.learnedWordNum
+    },
+    learnedPercentage(): number {
+      return this.learnedWordNum / this.remainingWordNum * 100
+    },
+    remainingDayNum(): number {
+      return Math.ceil(this.remainingWordNum / this.dailyWordNum)
     }
   },
   methods: {
-    getUserInfo() {
-      const token = uni.getStorageSync('token')
-      if (token != '') {
-        fetchUserInfo().then((res: any) => {
-          this.userInfo = res.data.data
-          uni.setStorageSync('userInfo', this.userInfo)
-        })
+    async getUserInfo() {
+      const res = await fetchUserInfo() as Response<any>;
+      if (res.code != 20000) {
+        return
       }
+      this.userInfo = res.data
+      uni.setStorageSync('userInfo', this.userInfo)
+    },
+    async getCurLibInfo() {
+      const data = {
+        voc_lib_id: uni.getStorageSync('userInfo').cur_lib
+      }
+      const res = await fetchVocLibLearningPlan(data) as Response<any>;
+      if (res.code != 20000) {
+        return
+      }
+      this.dailyWordNum = res.data.word_per_day;
+      this.learnedWordNum = res.data.learned_words;
+      this.wordTotalNum = res.data.total_words;
     },
     goToLogin() {
       uni.navigateTo({

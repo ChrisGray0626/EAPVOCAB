@@ -3,26 +3,25 @@
     <view class="bookCard">
       <!-- 单词表的图片 -->
       <view>
-        <libIcon :libName="curLibName.split(' ')[0]"/>
+        <libIcon :libName="userInfo.cur_lib_name.split(' ')[0]"/>
       </view>
       <!-- 单词表的描述 -->
       <view class="bookDetails">
         <view class="bookName">
-          <text>{{ curLibName }}</text>
+          <text>{{ userInfo.cur_lib_name }}</text>
           <navigator hover-class="none" url="/pages/moduleChange/index">
             <view class="changeModule">
               <text>Change Module</text>
               <uni-icons color="#C0C0C0" size="18" style="margin-left: 5px;" type="refreshempty"/>
-
             </view>
           </navigator>
         </view>
         <view class="schedule">
-          <text>{{ studiedWords }} / {{ remainWords }}</text>
+          <text>{{ learnedWordNum }} / {{ wordTotalNum }}</text>
         </view>
         <view class="progress">
           <u-line-progress
-              :percentage="studiedPercentage"
+              :percentage="learnedPercentage"
               :showText="false"
               activeColor="#78A4F4"
           />
@@ -33,7 +32,7 @@
 
     <view class="goalPicker">
       <view class="selectedPlan" @click="show">
-        <text>Study Plan: {{ selectedDailyWordNum }} words {{selectedDayNum}} days</text>
+        <text>Learning Plan: {{ selectedDailyWordNum }} words {{ selectedDayNum }} days</text>
       </view>
       <view>
         <picker-view :value="pickerIdx" @change="pickerChange">
@@ -54,15 +53,17 @@
 </template>
 <script lang="ts">
 import {defineComponent} from 'vue'
-import {fetchUserInfo} from "@/services";
+import {fetchVocLibLearningPlan, setVocLibLearningPlan} from "@/api";
+import type {Response, UserInfo} from "@/type";
 
 export default defineComponent({
   data() {
     return {
-      curLibName: "",
+      userInfo: {} as UserInfo,
       isShow: true,
-      remainWords: 3272,
-      studiedWords: 666,
+      wordTotalNum: -1,
+      learnedWordNum: -1,
+      dailyWordNum: -1,
       alternativePlans: [] as string[][],
       selectedPlan: "",
       dailyWordNums: [] as Number[],
@@ -71,14 +72,19 @@ export default defineComponent({
     }
   },
   created() {
+  },
+  async onShow() {
+    this.userInfo = uni.getStorageSync('userInfo');
+    console.log("userInfo", this.userInfo)
+    await this.getCurLibInfo();
     this.initAlternativePlans()
   },
-  onShow() {
-    this.getCurLib()
-  },
   computed: {
-    studiedPercentage(): number {
-      return this.studiedWords / this.remainWords * 100
+    remainingWordNum(): number {
+      return this.wordTotalNum - this.learnedWordNum
+    },
+    learnedPercentage(): number {
+      return this.learnedWordNum / this.remainingWordNum * 100
     },
     selectedDailyWordNum() {
       return this.dailyWordNums[this.pickerIdx[0]]
@@ -86,17 +92,15 @@ export default defineComponent({
     selectedDayNum() {
       return this.dayNums[this.pickerIdx[1]]
     },
-    pickerValue() {
-      return [this.pickerIdx, this.pickerIdx]
-    }
   },
 
   methods: {
     initAlternativePlans() {
+      // Init alternative plans
       let ll = []
-      for (let i = 1; i <= this.remainWords / 5; i++) {
+      for (let i = 1; i <= this.remainingWordNum / 5; i++) {
         const dailyWordNum = i * 5
-        const dayNum = Math.ceil(this.remainWords / dailyWordNum)
+        const dayNum = Math.ceil(this.remainingWordNum / dailyWordNum)
         if (this.dayNums.slice(-1)[0] === dayNum) {
           continue
         }
@@ -106,15 +110,21 @@ export default defineComponent({
       }
       this.alternativePlans.push(ll)
       this.selectedPlan = this.alternativePlans[0][0]
+      // Init picker index
+      const tmp = this.dailyWordNum / 5 - 1
+      this.pickerIdx = [tmp, tmp]
     },
-    getCurLib() {
-      const token = uni.getStorageSync('token')
-      if (token != '') {
-        fetchUserInfo().then((res: any) => {
-          const userInfo = res.data.data
-          this.curLibName = userInfo.cur_lib_name
-        })
+    async getCurLibInfo() {
+      const data = {
+        voc_lib_id: this.userInfo.cur_lib
       }
+      const res = await fetchVocLibLearningPlan(data) as Response<any>;
+      if (res.code != 20000) {
+        return
+      }
+      this.dailyWordNum = res.data.word_per_day;
+      this.learnedWordNum = res.data.learned_words;
+      this.wordTotalNum = res.data.total_words;
     },
     pickerChange(e: any) {
       // console.log(e)
@@ -139,8 +149,15 @@ export default defineComponent({
     show() {
       this.isShow = true
     },
-    savePlan() {
-      // TODO Save Plan
+    async savePlan() {
+      const data = {
+        voc_lib_id: this.userInfo.cur_lib,
+        new_word_per_day: this.selectedDailyWordNum,
+      }
+      const res = await setVocLibLearningPlan(data) as Response<any>;
+      if (res.code != 20000) {
+        return
+      }
       uni.showToast({title: "Save successfully!", icon: 'success'})
       this.goBack();
     },

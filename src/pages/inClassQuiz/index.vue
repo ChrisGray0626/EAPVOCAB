@@ -48,7 +48,8 @@
 </template>
 <script lang="ts">
 import {defineComponent} from 'vue'
-import {setInClassQuizResult, setWordQuizPass} from "@/services";
+import {setInClassQuizResult} from "@/api";
+import type {Response} from "@/type";
 
 export default defineComponent({
   created() {
@@ -114,28 +115,21 @@ export default defineComponent({
       this.curQuizIdx++
       this.curQuizIdx = Math.min(this.curQuizIdx, this.totalQuizCount - 1)
     },
-    confirmFinishedModal() {
+    async confirmFinishedModal() {
       const data = {
         quiz_id: this.quizId,
         correct_rate: this.correctRate,
       }
-      setInClassQuizResult(data).then((res: any) => {
-        if (res.data.code === 20000) {
-          this.closeFinishedModal()
-          uni.showToast({
-            title: "Submit successfully!",
-            icon: "success",
-          })
-          uni.navigateBack()
-        }
-        else {
-          uni.showToast({
-            title: "Submit failed!",
-            icon: "error",
-          })
-          console.error(res.data.msg)
-        }
+      let res = await setInClassQuizResult(data) as Response<any>;
+      if (res.code != 20000) {
+        return
+      }
+      this.closeFinishedModal()
+      uni.showToast({
+        title: "Submit successfully!",
+        icon: "success",
       })
+      uni.navigateBack()
     },
     cancelFinishedModal() {
       this.closeFinishedModal()

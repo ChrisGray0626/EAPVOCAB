@@ -8,7 +8,7 @@
         <view class="inputLabel">Nickname</view>
         <u-form-item borderBottom="true">
           <u-input
-              placeholder="Please Input Your Nickname"
+              placeholder="Please input your nickname"
               v-model="nickname"
               @change="changeNickname"
               border="none"
@@ -19,7 +19,7 @@
         <view class="inputLabel">Password</view>
         <u-form-item borderBottom="true">
           <u-input
-              placeholder="Please Input Your Password"
+              placeholder="Please input your password"
               v-model="password"
               @change="changePassword"
               border="none"
@@ -28,10 +28,21 @@
         </u-form-item>
       </view>
       <view class="inputBox">
+        <view class="inputLabel">Module</view>
+        <u-form-item borderBottom="true">
+          <u-input
+              placeholder="Please input your module"
+              v-model="module"
+              @change="changeModule"
+              border="none"
+          />
+        </u-form-item>
+      </view>
+      <view class="inputBox">
         <view class="inputLabel">XJTLU Email</view>
         <u-form-item borderBottom="true">
           <u-input
-              placeholder="Please Input Your Email"
+              placeholder="Please input your email"
               v-model="email"
               border="none"
               @change="changeEmail"
@@ -56,6 +67,11 @@
           </u-button>
         </view>
       </view>
+      <view class="userAgreementBox">
+        <text>By continuing, you agree to our</text>
+        <text class="userAgreementText" @click="goToUserAgreement">user agreement</text>
+        <text>.</text>
+      </view>
       <u-button type='primary' @click="signUp">Submit</u-button>
     </u-form>
   </view>
@@ -63,22 +79,24 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 
-import {handleRegister, sendCaptcha} from "@/services"
+import {handleRegister, sendCaptcha} from "@/api"
 import {checkEmail, checkFieldIsEmpty} from "@/util/fieldUtil";
+import type {Response} from "@/type";
 
 export default defineComponent({
   data() {
     return {
       nickname: '',
-      email: '',
       password: '',
+      module: '',
+      email: '',
       captcha: '',
       isSending: false,
       countDown: 0,
     }
   },
   methods: {
-    sendCode() {
+    async sendCode() {
       // 检查邮箱填写情况
       if (checkFieldIsEmpty(this.email, 'email')) {
         return;
@@ -93,37 +111,34 @@ export default defineComponent({
       let data = {
         email: this.email,
       };
-      sendCaptcha(data).then((res: any) => {
-            if (res.data.code === 20000) {
-              uni.showToast({
-                title: "Please check your email",
-                icon: 'success',
-              })
-            } else {
-              uni.showToast({
-                    title: res.data.msg,
-                    icon: 'error',
-                  }
-              )
-            }
-            // 初始化倒计时
-            this.initCountDown();
-            // 设置验证码发送状态
-            this.isSending = false;
-          }
-      )
+      let res = await sendCaptcha(data) as Response<any>;
+      if (res.code != 20000) {
+        return
+      }
+      uni.showToast({
+        title: "Please check your email",
+        icon: 'success',
+      })
+      // 初始化倒计时
+      this.initCountDown();
+      // 设置验证码发送状态
+      this.isSending = false;
     },
-    signUp() {
+    async signUp() {
       // Check nickname
       if (checkFieldIsEmpty(this.nickname, 'nickname')) {
         return;
       }
-      // Check email
-      if (!checkEmail(this.email)) {
-        return;
-      }
       // Check password
       if (checkFieldIsEmpty(this.password, 'password')) {
+        return;
+      }
+      // Check module
+      if (checkFieldIsEmpty(this.module, 'module')) {
+        return;
+      }
+      // Check email
+      if (!checkEmail(this.email)) {
         return;
       }
       // Check captcha
@@ -132,23 +147,24 @@ export default defineComponent({
       }
       const data = {
         username: this.nickname,
-        email: this.email,
         password: this.password,
+        module: this.module,
+        email: this.email,
         captcha: this.captcha,
       };
-      handleRegister(data).then((res: any) => {
-        if (res.data.code === 20000) {
-          uni.showToast({
-            title: "Registration successful!",
-            icon: 'success',
-          })
-          this.goToLogin();
-        } else {
-          uni.showToast({
-            title: res.data.msg,
-            icon: 'error',
-          })
-        }
+      let res = await handleRegister(data) as Response<any>;
+      if (res.code != 20000) {
+        return
+      }
+      uni.showToast({
+        title: "Registration successful!",
+        icon: 'success',
+      })
+      this.goToLogin();
+    },
+    goToUserAgreement() {
+      uni.navigateTo({
+        url: '/pages/userAgreement/index'
       })
     },
     goToLogin() {
@@ -171,6 +187,9 @@ export default defineComponent({
     },
     changePassword(value: string) {
       this.password = value
+    },
+    changeModule(value: string) {
+      this.module = value
     },
     changeEmail(value: string) {
       this.email = value
