@@ -23,14 +23,14 @@ async function request(options: UniApp.RequestOptions) {
         }
         // Handle other exceptions
         else {
-          setTimeout(() => {
-              uni.showToast({
-                title: res.msg,
-                icon: 'error',
-              })
-            },
-            1000
-          )
+          // setTimeout(() => {
+          //     uni.showToast({
+          //       title: res.msg,
+          //       icon: 'error',
+          //     })
+          //   },
+          //   1000
+          // )
           console.error(res.msg)
         }
         resolve(res);

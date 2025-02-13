@@ -19,7 +19,7 @@
       </uni-swipe-action>
     </view>
     <view v-else class="empty">
-      <u-image src="/static/images/empty.png"></u-image>
+      <image class="empty_img" src="/static/images/empty.png" ></image>
       <text>No Words In The Bank</text>
     </view>
   </view>
@@ -311,12 +311,14 @@ export default defineComponent({
       for (let i = 0; i < n; i++) {
         this.isChecks.push(i)
         this.checkBoxRanges.push({value: i, text: this.candidateWords[i].word})
+        console.log("checkBoxRanges", this.checkBoxRanges)
       }
     },
     async handleAddWordFromPassage() {
       // 获取选中的单词
       const selectedWords = this.isChecks.map((value, index, array) => {
-        return this.candidateWords[index]
+        const idx = value as number
+        return this.candidateWords[idx]
       })
       const data = {
         voc_sec_id: this.voc_sec_id,

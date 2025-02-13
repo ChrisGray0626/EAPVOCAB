@@ -68,7 +68,7 @@
         </view>
       </view>
       <view class="userAgreementBox">
-        <text>By continuing, you agree to our</text>
+        <text>By continuing, you agree to our \n</text>
         <text class="userAgreementText" @click="goToUserAgreement">user agreement</text>
         <text>.</text>
       </view>
@@ -113,6 +113,12 @@ export default defineComponent({
       };
       let res = await sendCaptcha(data) as Response<any>;
       if (res.code != 20000) {
+        uni.showToast({
+          title: res.msg,
+          icon: 'error',
+        })
+        this.initCountDown();
+        this.isSending = false;
         return
       }
       uni.showToast({
@@ -154,6 +160,10 @@ export default defineComponent({
       };
       let res = await handleRegister(data) as Response<any>;
       if (res.code != 20000) {
+        uni.showToast({
+          title: res.msg,
+          icon: 'error',
+        })
         return
       }
       uni.showToast({

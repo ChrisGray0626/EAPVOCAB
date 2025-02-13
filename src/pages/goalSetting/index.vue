@@ -61,31 +61,34 @@ export default defineComponent({
     return {
       userInfo: {} as UserInfo,
       isShow: true,
-      wordTotalNum: -1,
-      learnedWordNum: -1,
-      dailyWordNum: -1,
+      wordTotalNum: 0,
+      learnedWordNum: 0,
+      dailyWordNum: 0,
       alternativePlans: [] as string[][],
       selectedPlan: "",
       dailyWordNums: [] as Number[],
       dayNums: [] as Number[],
-      pickerIdx: [0, 0]
+      pickerIdx: [0, 0],
+      learnedPercentage: 0
     }
   },
   created() {
   },
   async onShow() {
+    this.dailyWordNums = []
+    this.dayNums = []
+    this.alternativePlans = []
     this.userInfo = uni.getStorageSync('userInfo');
     console.log("userInfo", this.userInfo)
     await this.getCurLibInfo();
+
     this.initAlternativePlans()
   },
   computed: {
     remainingWordNum(): number {
       return this.wordTotalNum - this.learnedWordNum
     },
-    learnedPercentage(): number {
-      return this.learnedWordNum / this.remainingWordNum * 100
-    },
+
     selectedDailyWordNum() {
       return this.dailyWordNums[this.pickerIdx[0]]
     },
@@ -125,6 +128,7 @@ export default defineComponent({
       this.dailyWordNum = res.data.word_per_day;
       this.learnedWordNum = res.data.learned_words;
       this.wordTotalNum = res.data.total_words;
+      this.learnedPercentage = this.learnedWordNum / this.wordTotalNum * 100
     },
     pickerChange(e: any) {
       // console.log(e)

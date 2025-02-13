@@ -16,6 +16,9 @@
       "path": "pages/login/index"
     },
     {
+      "path": "pages/resetpw/index"
+    },
+    {
       "path": "pages/moduleChange/index"
     },
     {
@@ -35,7 +38,8 @@
     },
     {
       "path": "pages/userAgreement/index"
-    }
+    },
+    
   ],
   "globalStyle": {
     "navigationBarTextStyle": "black",

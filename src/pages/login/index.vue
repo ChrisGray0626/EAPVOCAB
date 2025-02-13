@@ -12,17 +12,33 @@
               @change="changeEmail"
               border="none"
           />
+
+          <view @click="showActionSheet" class="suffix-button">
+            <view> {{ msg }} </view>
+            <u-icon name="arrow-right" size="13" />
+          </view>
+          <u-action-sheet
+            :show="actionSheetVisible"
+            :actions="emailSuffixOptions"
+            @cancel="actionSheetVisible = false"
+            @select="selectSuffix"
+          />
         </u-form-item>
+
       </view>
       <view class='inputBox'>
         <text class='inputLabel'>Password</text>
-        <u-form-item borderBottom="true">
+        <u-form-item borderBottom="true" class="password">
           <u-input
               placeholder="Please input your password"
               @change="changePassword"
               border="none"
               password
           />
+          <!-- 忘记密码？ -->
+          <view class="passwordForget"> 
+            <text class='forgotPassword' @click="goToResetPassword">Forgot password?</text>
+          </view>
         </u-form-item>
       </view>
       <u-button type='primary' class='SignInButton' @click.stop="login">Sign in</u-button>
@@ -41,14 +57,27 @@ export default defineComponent({
   data() {
     return {
       email: '',
+      msg:'Select email suffix',
       password: '',
+      emailSuffix:'',
+      type:'select',
+      suffixShow: false,
+      actionSheetVisible: false,
+      emailSuffixOptions: [
+        { name: '@student.xjtlu.edu.cn', value: '@student.xjtlu.edu.cn' },
+        { name: '@xjtlu.edu.cn', value: '@xjtlu.edu.cn' },
+      ],
     };
   },
-  computed: {},
+  computed: {
+    fullEmail() {
+      return this.email + this.emailSuffix;
+    }
+  },
   methods: {
     login: async function () {
       // Check email
-      if (!checkEmail(this.email)) {
+      if (!checkEmail(this.fullEmail)) {
         return;
       }
       // Check password
@@ -56,7 +85,7 @@ export default defineComponent({
         return;
       }
       let data = {
-        email: this.email,
+        email: this.fullEmail,
         password: this.password
       }
       let res = await handleLogin(data) as Response<any>;
@@ -85,13 +114,27 @@ export default defineComponent({
         url: '/pages/register/index'
       })
     },
+
+    goToResetPassword() {
+      uni.navigateTo({
+        url: '/pages/resetpw/index'
+      })
+    },
+
     changeEmail(value: string) {
       this.email = value
     },
     changePassword(value: string) {
       this.password = value
+    },
+    showActionSheet() {
+      this.actionSheetVisible = true; 
+    },
+    selectSuffix(action: any) {
+      this.emailSuffix = action.value; // 选择邮箱后缀
+      this.msg = this.emailSuffix;
+      this.actionSheetVisible = false; // 关闭 Action Sheet
     }
-
   }
 });
 </script>

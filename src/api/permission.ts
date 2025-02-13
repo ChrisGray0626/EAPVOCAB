@@ -9,6 +9,7 @@ const whiteList = [
     '/pages/discover/index',
     '/pages/personal/index',
     '/pages/userAgreement/index',
+    '/pages/resetpw/index',
 ]
 
 const routeTypes = ["navigateTo", "redirectTo"]
