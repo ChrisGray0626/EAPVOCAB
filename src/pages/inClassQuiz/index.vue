@@ -1,8 +1,10 @@
 <template>
   <view class="content">
     <view class="questionBox">
+
       <view class="word">
         <text>{{ curQuiz.word }}</text>
+        
       </view>
       <view class="options">
         <radio-group @change="radioChange">

@@ -3,7 +3,7 @@
     <view class="studentCard">
       <view class="studentInfo">
         <u-avatar
-            size="65"
+            :size="avatarSize"
             :src="avatarUrl"
         />
         <view v-if="userInfo.username" class="info">
@@ -91,9 +91,10 @@ export default defineComponent({
       userInfo: {} as UserInfo,
       avatarUrl: "../../static/images/boy_avatar.png",
       curLibName: "",
-      learnedWordNum: -1,
-      wordTotalNum: -1,
-      dailyWordNum: -1,
+      learnedWordNum: 0,
+      wordTotalNum: 0,
+      dailyWordNum: 0,
+      learnedPercentage: 0
     };
   },
   async onShow() {
@@ -111,11 +112,20 @@ export default defineComponent({
     remainingWordNum(): number {
       return this.wordTotalNum - this.learnedWordNum
     },
-    learnedPercentage(): number {
-      return this.learnedWordNum / this.remainingWordNum * 100
-    },
+    // learnedPercentage(): number {
+    //   return this.learnedWordNum / this.remainingWordNum * 100
+    // },
     remainingDayNum(): number {
       return Math.ceil(this.remainingWordNum / this.dailyWordNum)
+    },
+    avatarSize(): number {
+      if (window.innerWidth <= 420) {
+        return 50; 
+      } else if (window.innerWidth <= 1024) {
+        return 65; // 屏幕宽度小于等于1024px时，头像大小为65
+      } else {
+        return 80; // 屏幕宽度大于1024px时，头像大小为80
+      }
     }
   },
   methods: {
@@ -135,9 +145,11 @@ export default defineComponent({
       if (res.code != 20000) {
         return
       }
+      console.log(res.data)
       this.dailyWordNum = res.data.word_per_day;
       this.learnedWordNum = res.data.learned_words;
       this.wordTotalNum = res.data.total_words;
+      this.learnedPercentage = this.learnedWordNum / this.wordTotalNum * 100
     },
     goToLogin() {
       uni.navigateTo({

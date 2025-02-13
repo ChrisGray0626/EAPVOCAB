@@ -45,5 +45,13 @@
     font-weight: bold;
     text-align: center;
   }
+
+  @media (max-width: 410px) {
+    .icon-container {
+      position: relative;
+      width: 100px;
+    }
+  }
+
   </style>
   

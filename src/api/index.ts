@@ -180,6 +180,16 @@ export function handleLogin(data: any) {
 }
 
 /**
+ * 发送登出请求
+ */
+ 
+ export function handleLogout() {
+    return post({
+        url: baseURL + "user/logout",
+    })
+}
+
+/**
  * 发送注册请求
  */
 export function handleRegister(data: any) {
@@ -188,6 +198,28 @@ export function handleRegister(data: any) {
         data: data,
     })
 }
+
+/**
+ * 发送重设密码请求
+ */
+export function handleResetPassword(data: any) {
+    return post({
+        url: baseURL + "user/reset_pw",
+        data: data,
+    }) 
+}
+
+/**
+ * 发送注册验证码（重设密码版）
+ */
+export function sendResetCaptcha(data: any) {
+    return post({
+        url: baseURL + "user/reset_pw_captcha",
+        data: data,
+    }) 
+}
+
+
 
 /**
  * 发送注册验证码

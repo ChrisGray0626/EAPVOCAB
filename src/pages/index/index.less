@@ -1,4 +1,5 @@
 .studentCard {
+
   margin: 20px 10px;
   background-color: white;
   padding: 20px;
@@ -8,15 +9,14 @@
   overflow: hidden;
 
   .studentInfo {
+    
     position: relative;
-    // padding-right: 10px;
     display: flex;
     align-items: center;
 
     .login {
       margin: 0 10px;
       font-weight: bold;
-      // font-size: 40px;
     }
 
     .info {
@@ -28,12 +28,12 @@
     }
 
     .username {
-      font-size: 1.5em;
+      font-size: 20px;
       font-weight: bold;
     }
 
     .userid {
-      font-size: 1em;
+      font-size: 15px;
       color: rgb(195, 195, 195);
       font-weight: 500;
     }
@@ -71,7 +71,7 @@
 
     .bookName {
       font-weight: bold;
-      font-size: 24px;
+      font-size: 20px;
     }
 
     .change {
@@ -79,6 +79,7 @@
       display: flex;
       align-items: center;
       color: rgb(195, 195, 195);
+      font-weight: bold;
       // padding: 5px 20px;
     }
   }
@@ -140,5 +141,32 @@
   margin: 0 auto;
   width: 70%;
   font-size: 40px;
+}
+
+@media (max-width: 410px) {
+  .username {
+    font-size: 15px !important;
+  }
+  .userid {
+    font-size: 10px !important;
+  }
+  .wordBank {
+    margin-right: 0px !important;
+    font-size: 8px !important;
+    text{
+      width: 50px !important;
+    }
+  }
+
+  .bookName {
+    font-size: 14px !important; 
+  }
+  .change{
+    font-size: 12px !important;
+    font-weight: bold;
+  }
+  .schedule {
+    font-size: 10px !important;
+  }
 }
 
