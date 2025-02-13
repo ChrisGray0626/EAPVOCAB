@@ -16,6 +16,11 @@
           </view>
         </radio-group>
       </view>
+      <!--        显示正确答案-->
+      <view class="correctAnswer" v-if="isCorrectAnswerShowed">
+        <text>Correct answer:</text>
+        {{ curQuiz.options[curQuiz.answer] }}
+      </view>
     </view>
     <view class="pagination">
       <!--翻页器-->
@@ -27,9 +32,14 @@
           @change="paginationChange"
       />
     </view>
-    <view class="confirmButton">
-      <u-button type="primary" shape="circle" @click.stop="confirmAnswer">
+    <view class="button">
+      <u-button type="primary" shape="circle" @click.stop="handleConfirm">
         <text>Confirm</text>
+      </u-button>
+    </view>
+    <view class="button" v-if="isLastQuiz">
+      <u-button type='primary' :plain="true" shape="circle" @click.stop="handleSubmit">
+        <text>Submit</text>
       </u-button>
     </view>
   </view>
@@ -64,6 +74,7 @@ export default defineComponent({
       quizzes: [] as Quiz[],
       curQuizIdx: 0,
       answers: [] as Answer[],
+      isTry: false,
       isFinishedModalShowed: false,
     }
   },
@@ -77,10 +88,13 @@ export default defineComponent({
     curAnswer() {
       return this.answers[this.curQuizIdx];
     },
+    isCorrectAnswerShowed() {
+      return this.isTry && !this.curAnswer.isCorrect
+    },
     correctRate() {
       return this.answers.filter(item => item.isCorrect).length / this.totalQuizCount;
     },
-    isFinished() {
+    isLastQuiz() {
       return this.curQuizIdx === this.totalQuizCount - 1;
     }
   },
@@ -102,20 +116,39 @@ export default defineComponent({
       // 监听选择
       this.curAnswer.selectedAnswer = Number(e.detail.value)
     },
-        paginationChange(e: any) {
+    paginationChange(e: any) {
       this.curQuizIdx = e.current - 1
+      // 设置未作答
+      this.isTry = false
     },
-    confirmAnswer() {
+    handleConfirm() {
+      // 设置已作答
+      this.isTry = true
       // 设置正误情况
       this.curAnswer.isCorrect = Number(this.curAnswer.selectedAnswer) === this.curQuiz.answer
-      // 判断完成情况
-      if (this.isFinished) {
-        this.showFinishedModal()
-        return
+      if (this.curAnswer.isCorrect) {
+        uni.showToast({
+          title: 'Correct',
+          icon: 'success'
+        })
+        // 设置未作答
+        this.isTry = false
+        if (this.isLastQuiz) {
+
+        } else {
+          // 翻页
+          this.curQuizIdx++
+          this.curQuizIdx = Math.min(this.curQuizIdx, this.totalQuizCount - 1)
+        }
+      } else {
+        uni.showToast({
+          title: 'Incorrect',
+          icon: 'error'
+        })
       }
-      // 翻页
-      this.curQuizIdx++
-      this.curQuizIdx = Math.min(this.curQuizIdx, this.totalQuizCount - 1)
+    },
+    handleSubmit() {
+      this.showFinishedModal()
     },
     async confirmFinishedModal() {
       const data = {
