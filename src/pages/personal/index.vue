@@ -31,9 +31,8 @@
       <uni-list :border="false">
         <uni-list-item
           clickable
-          link
-          v-for="(item, index) in functions"
-          :to="item.url"
+          v-for="(item, index) in tools"
+          @click="handleToolClick(item.idx)"
           :key="index"
         >
           <template v-slot:body>
@@ -45,7 +44,7 @@
       </uni-list>
     </view>
     <view class="quitButton" v-show="isLogin">
-      <u-button type="error" @click="toLogout">Log Out</u-button>
+      <u-button type="error" @click="handleLogout">Log Out</u-button>
     </view>
 
   </view>
@@ -68,22 +67,22 @@ export default defineComponent({
       avatarUrl: "../../static/images/boy_avatar.png",
       consecutiveDayNum: 0,
       learnedWordTotalNum: 0,
-      functions: [
+      tools: [
         {
           title: "Learning Calendar",
-          url: "/pages/learningCalendar/index",
+          idx: 0,
         },
         {
           title: "Word Bank",
-          url: "/pages/wordBank/index",
+          idx: 1,
         },
         {
           title: "Vocabulary Test",
-          url: "/pages/vocabularyTest/index",
+          idx: 2,
         },
         {
           title: "Goal Setting",
-          url: "/pages/goalSetting/index",
+          idx: 3,
         },
       ],
     };
@@ -115,12 +114,35 @@ export default defineComponent({
       }
       this.learnedWordTotalNum = res.data.words_learned;
     },
+    handleToolClick(idx: number) {
+      if (idx === 0) {
+      } else if (idx === 1) {
+        this.goToWordBank();
+      } else if (idx === 2) {
+        this.goTOErrorCollection();
+      } else if (idx === 3) {
+        this.goToGoalSetting();
+      }
+    },
     goToLogin() {
       uni.navigateTo({
         url: "/pages/login/index",
       });
     },
-    async toLogout() {
+    goTOErrorCollection() {
+      window.location.href = "http://114.55.87.45:8006"
+    },
+    goToWordBank() {
+      uni.navigateTo({
+        url: "/pages/wordBank/index",
+      });
+    },
+    goToGoalSetting() {
+      uni.navigateTo({
+        url: "/pages/goalSetting/index",
+      });
+    },
+    async handleLogout() {
       uni.showModal({
         title: 'Warning',
         content: 'Are you sure you want to log out?',
@@ -129,7 +151,6 @@ export default defineComponent({
                 await handleLogout();
                 uni.showToast({title: "Log out successfully!", icon:'success'})
                 uni.clearStorageSync();
-                this.userInfo = {};
                 this.isLogin = false;
                 await uni.navigateTo({
                     url: '/pages/login/index'
