@@ -160,6 +160,7 @@ export default defineComponent({
         this.answers[i] = new Array(totalQuestionCount);
         for (let j = 0; j < totalQuestionCount; j++) {
           this.answers[i][j] = {
+            // 初始化为 -1，表示未作答
             selectedAnswer: -1,
             isCorrect: false,
           };
@@ -202,6 +203,14 @@ export default defineComponent({
           const isLastQuestion =
             this.curQuestionIdx === this.curTotalQuestionCount - 1;
           if (isLastQuestion) {
+            // 判断是否全部作答
+            const isAllTry = this.answers[this.curWordQuizIdx].every(
+                (answer) => answer.selectedAnswer !== -1
+            );
+            // 若未全部作答，则设置未通过
+            if (!isAllTry) {
+              this.isWordPass = false;
+            }
             // 判断单词是否通过：所有题目都答对算通过
             if (this.isWordPass) {
               const data = {
