@@ -100,6 +100,7 @@ export default defineComponent({
       curWordQuizIdx: 0,
       curQuestionIdx: 0,
       isTry: false,
+      isWordPass: true,
       isSubmitModalShowed: false,
     };
   },
@@ -178,31 +179,31 @@ export default defineComponent({
     },
     async handleConfirm() {
       console.log("curAnswer", this.curAnswer);
+      // 判断是否作答
       if (this.curAnswer.selectedAnswer == -1) {
+        // 设置未通过
+        this.isWordPass = false;
         uni.showToast({
           title: "Please select an answer",
           icon: "error",
         });
       } else {
+        // 设置已作答
         this.isTry = true;
         this.curAnswer.isCorrect =
           Number(this.curAnswer.selectedAnswer) === this.curQuestion.answer;
+        // 判断是否回答正确
         if (this.curAnswer.isCorrect) {
           uni.showToast({
             title: "Correct",
             icon: "success",
           });
-          // 设置未作答
-          this.isTry = false;
           // 判断是否为最后一题
           const isLastQuestion =
             this.curQuestionIdx === this.curTotalQuestionCount - 1;
           if (isLastQuestion) {
-            // 判断单词是否通过
-            const isWordPass = this.answers[this.curWordQuizIdx].some(
-              (answer: Answer) => answer.isCorrect
-            );
-            if (isWordPass) {
+            // 判断单词是否通过：所有题目都答对算通过
+            if (this.isWordPass) {
               const data = {
                 word_id: this.curWordQuiz.word_id,
               };
@@ -213,6 +214,8 @@ export default defineComponent({
               }
             }
           } else {
+            // 设置未作答
+            this.isTry = false;
             // 翻页至下一题
             this.curQuestionIdx++;
             this.curQuestionIdx = Math.min(
@@ -221,6 +224,8 @@ export default defineComponent({
             );
           }
         } else {
+          // 设置未通过
+          this.isWordPass = false;
           uni.showToast({
             title: "Incorrect",
             icon: "error",
@@ -229,6 +234,10 @@ export default defineComponent({
       }
     },
     handleNextWord() {
+      // 设置未作答
+      this.isTry = false;
+      // 初始化已通过
+      this.isWordPass = true;
       // 翻页至下一词
       this.curWordQuizIdx++;
       this.curWordQuizIdx = Math.min(
@@ -236,8 +245,6 @@ export default defineComponent({
         this.totalWordQuizCount - 1
       );
       this.curQuestionIdx = 0;
-      // 设置未作答
-      this.isTry = false;
     },
     handleSubmit() {
       this.showFinishedModal();
